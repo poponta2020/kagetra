@@ -12,7 +12,8 @@
       "Bash(docker-compose exec:*)",
       "Bash(docker-compose logs:*)",
       "Bash(findstr:*)",
-      "Bash(docker-compose restart:*)"
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose ps:*)"
     ]
   }
 }
