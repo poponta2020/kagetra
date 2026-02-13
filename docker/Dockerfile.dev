@@ -1,0 +1,39 @@
+FROM ruby:2.4-stretch
+
+# Debian Stretch は EOL のためアーカイブリポジトリに切り替え
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+# システム依存パッケージのインストール
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      build-essential \
+      pkg-config \
+      libpq-dev \
+      imagemagick \
+      libmagickwand-dev \
+      libmagickcore-dev \
+      postgresql-client \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/lib/x86_64-linux-gnu/ImageMagick-6.9.7/bin-q16/Magick-config /usr/bin/Magick-config
+
+# Node.js インストール（nodesource 経由、npm 付属）
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y --allow-unauthenticated nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# bower をグローバルインストール
+RUN npm install -g bower
+
+# bundler インストール（Ruby 2.4 互換バージョン）
+RUN gem install bundler -v '< 2.0'
+
+WORKDIR /app
+
+# エントリポイントスクリプトの配置（Windows CRLF → LF 変換）
+COPY docker/entrypoint.dev.sh /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 9292
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

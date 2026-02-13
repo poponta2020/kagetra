@@ -18,6 +18,11 @@
         %li(class='{{i==data.curyear?"current":""}}')
           %a.page(data-year='{{i}}') {{i}}
         <% } %>
+  .row
+    .large-12.columns
+      %label
+        %input.toggle-empty(type='checkbox')
+        参加者なしの大会も表示する
   <% t = _.template_braces($("#templ-result-summaries").html()) %>
   .row
     .large-12.columns

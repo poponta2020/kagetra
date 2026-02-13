@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ruby:*)",
+      "Bash(node --version:*)",
+      "Bash(psql:*)",
+      "Bash(docker:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(timeout:*)",
+      "Bash(git checkout:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose exec:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(findstr:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose ps:*)"
+    ]
+  }
+}

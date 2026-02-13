@@ -34,9 +34,6 @@ GEM
       mini_portile (~> 0.6.0)
     pg (0.17.1)
     rack (1.5.2)
-    rack-coffee (1.0.3)
-      coffee-script
-      rack
     rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
@@ -107,11 +104,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  coffee-script
   compass
   haml
   nokogiri
   pg
-  rack-coffee
   redcarpet
   rmagick
   rspec
@@ -125,3 +122,6 @@ DEPENDENCIES
   tux
   unicorn
   zurb-foundation (= 4.3.2)
+
+BUNDLED WITH
+   1.17.3
