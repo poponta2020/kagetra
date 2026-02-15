@@ -43,7 +43,7 @@ class NotificationBatch
       new_events.each do |ev|
         date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
         payload = {
-          title: "「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました",
+          title: "「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}案内",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
