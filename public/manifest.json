@@ -1,0 +1,15 @@
+{
+  "name": "景虎",
+  "short_name": "景虎",
+  "start_url": "/top",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003366",
+  "icons": [
+    {
+      "src": "/img/apple-touch-icon.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }
+  ]
+}

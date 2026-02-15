@@ -55,5 +55,13 @@ else
   echo "==> DB は既に初期化済みです"
 fi
 
+# Push通知用テーブルのマイグレーション
+echo "==> Push通知テーブルのマイグレーション..."
+for f in db/migrations/*.sql; do
+  if [ -f "$f" ]; then
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$f" 2>/dev/null || true
+  fi
+done
+
 echo "==> アプリケーションを起動中 (http://0.0.0.0:9292) ..."
 exec bundle exec rackup -o 0.0.0.0 -p 9292

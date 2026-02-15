@@ -27,6 +27,8 @@ GEM
     ffi (1.9.6)
     haml (4.0.5)
       tilt
+    hkdf (0.3.0)
+    jwt (2.3.0)
     kgio (2.9.2)
     mini_portile (0.6.1)
     multi_json (1.10.1)
@@ -96,6 +98,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    web-push (1.0.0)
+      hkdf (~> 0.2)
+      jwt (~> 2.0)
     websocket (1.2.1)
     zurb-foundation (4.3.2)
       sass (>= 3.2.0)
@@ -121,6 +126,7 @@ DEPENDENCIES
   spreadsheet
   tux
   unicorn
+  web-push
   zurb-foundation (= 4.3.2)
 
 BUNDLED WITH
