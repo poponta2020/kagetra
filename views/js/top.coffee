@@ -158,7 +158,7 @@ define (require,exports,module) ->
       @collection.sort()
     initialize: ->
       _.bindAll(this,"render","reorder")
-      @hide_unreachable = true
+      @hide_unreachable = not g_sub_admin
       @collection = new EventListCollection()
       @listenTo(@collection,"sort", @render)
       @collection.set_comparator('date')
@@ -176,7 +176,7 @@ define (require,exports,module) ->
         v.render()
         @$el.find(".event-body").append(v.$el)
         @subviews.push(v)
-        if m.get('deadline_alert') and not m.get('forbidden') and not m.get('choice')
+        if m.get('deadline_alert') and (g_sub_admin or (not m.get('forbidden') and not m.get('choice')))
           av = new EventAbbrevView(model:m,choice_model:v.choice_model)
           av.render()
           deadline_before.find(".body").append(av.$el)
