@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href='/'>
+    <meta content='noindex,nofollow,noarchive' name='robots'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <title>景虎 - ログイン</title>
+    <link href='/img/favicon.ico' rel='shortcut icon'>
+    <link href='/img/apple-touch-icon.png' rel='apple-touch-icon'>
+    <link href='/css/v25/app.css' rel='stylesheet'>
+    <link href='/css/v25/colorbox.css' rel='stylesheet'>
+    <link href='/js/v25/libs/select2/select2.css' rel='stylesheet'>
+    <style type='text/css'>
+      body{
+      background-image: url(/img/bg/02.jpg), url(/img/bg/02_rev.jpg);
+      background-repeat: repeat-y, repeat-y;
+      background-position: left top, right top;
+      }
+    </style>
+  </head>
+  <body data-haml=''>
+    <div class='row' style='padding-top:8px;'>
+      <div class='columns'>
+        <a href='/mobile/'>[携帯用]</a>
+        <a href='public/bbs'>[公開掲示板]</a>
+        <a href='public/schedule'>[公開予定表]</a>
+        <a href='public/result_list'>[入賞歴]</a>
+        <a href='public/event_catalog'>[大会/行事案内]</a>
+        <a href='public/wiki#page/41'>[役職]</a>
+        <a href='public/wiki#page/15'>[練習会場]</a>
+      </div>
+    </div>
+    <div id='container-shared-pass'></div>
+    <div id='container-login'></div>
+    <div id='container-board-message'></div>
+    <script id='templ-shared-pass' type='text/template'>
+      <div class='row'>
+        <form class='large-6 columns' id='shared-pass'>
+          <fieldset>
+            <legend>ログイン</legend>
+            <div class='row'>
+              <div class='large-8 columns'>
+                <label>共通パスワード</label>
+                <div class='row collapse'>
+                  <div class='large-10 small-10 columns'>
+                    <input autofocus type='password'>
+                  </div>
+                  <div class='large-2 small-2 columns'>
+                    <input class='button postfix radius' type='submit' value='GO'>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </script>
+    <script id='templ-user-list' type='text/template'>
+      <div class='row'>
+        <div class='large-3 columns'>
+          <select id='initials'>
+            <option value='0'>あ行</option>
+            <option value='1'>か行</option>
+            <option value='2'>さ行</option>
+            <option value='3'>た行</option>
+            <option value='4'>な行</option>
+            <option value='5'>は行</option>
+            <option value='6'>ま行</option>
+            <option value='7'>や行</option>
+            <option value='8'>ら行</option>
+            <option value='9'>わ行</option>
+            <option value='-1'>その他</option>
+          </select>
+        </div>
+        <div class='large-9 columns'>
+          <select id='user-names'></select>
+        </div>
+      </div>
+    </script>
+    <script id='templ-login' type='text/template'>
+      <div class='row'>
+        <form class='large-6 columns' id='login'>
+          <fieldset>
+            <legend>ログイン</legend>
+            <div id='user-list'></div>
+            <div class='row'>
+              <div class='large-8 columns'>
+                <label>個人パスワード</label>
+                <div class='row collapse'>
+                  <div class='large-10 small-10 columns'>
+                    <input autofocus type='password'>
+                  </div>
+                  <div class='large-2 small-2 columns'>
+                    <input class='button postfix radius' type='submit' value='GO'>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </script>
+    <script id='templ-board-message' type='text/template'>
+      <div class='row'>
+        <div class='columns'>
+          <div class='message panel pre'>{{ _.replace_url_escape(data.message) }}</div>
+        </div>
+      </div>
+    </script>
+    <script>
+      var g_shared_salt="58ME7KeMo1zCenH0BGtI8xlQq9vWkawe";
+    </script>
+    <!--[if lt IE 9]>
+      <script>
+        alert("Internet Explorer 8以下のブラウザは未対応です．携帯用ページを使用して下さい．");
+      </script>
+    <![endif]-->
+    <div class='row' id='body-end'>
+      <a class='right' href='javascript:window.scrollTo(0,0);'>&uArr; 一番上へ</a>
+    </div>
+    <!--[if IE 9]>
+      <script>
+        var g_is_ie9 = true
+      </script>
+    <![endif]-->
+    <script>
+      var g_user_name=''
+    </script>
+    <script>
+      var g_public_mode=false
+    </script>
+    <script data-main='/js/main' data-start='login' src='/js/v25/libs/requirejs/require.js'></script>
+    <script>
+      var g_resource_version = '25';
+      requirejs.config({
+      baseUrl: '/js/v25'
+      })
+    </script>
+  </body>
+</html>

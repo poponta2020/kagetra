@@ -44,6 +44,11 @@
           %a 最終書込
   .row
     .large-12.columns
+      %label
+        %input.toggle-unreachable(type='checkbox')
+        申込不可のイベントも表示する
+  .row
+    .large-12.columns
       %ul.event-body.large-block-grid-2.small-block-grid-1
 
 %script#templ-event-abbrev(type='text/template')
