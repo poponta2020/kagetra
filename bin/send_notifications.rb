@@ -43,8 +43,7 @@ class NotificationBatch
       new_events.each do |ev|
         date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
         payload = {
-          title: "景虎: 新しい大会が追加されました",
-          body: "「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました",
+          title: "「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
@@ -75,8 +74,7 @@ class NotificationBatch
         next if already_chosen
 
         payload = {
-          title: "景虎: 本日締切の大会があります",
-          body: "「#{ev.name}」の申込締切は本日です",
+          title: "「#{ev.name}」の申込締切は本日です",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
@@ -114,8 +112,7 @@ class NotificationBatch
         next unless chosen
 
         payload = {
-          title: "景虎: コメントが届きました",
-          body: "「#{ev.name}」に新しいコメント(#{count}件)",
+          title: "「#{ev.name}」に新しいコメント(#{count}件)",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
@@ -136,8 +133,7 @@ class NotificationBatch
     admin_users_with_setting(:admin_deadline).each do |user_id|
       deadline_events.each do |ev|
         payload = {
-          title: "景虎: 申込処理が必要です",
-          body: "「#{ev.name}」が締切を迎えました(参加者#{ev.participant_count}名)",
+          title: "「#{ev.name}」が締切を迎えました(参加者#{ev.participant_count}名)",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
