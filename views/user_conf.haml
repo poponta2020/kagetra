@@ -4,9 +4,14 @@
   user_conf
 = haml :top_bar
 
+%script
+  var g_is_admin = #{!!(@user.admin or @user.sub_admin)};
+
 #user-conf
 
 #change-pass
+
+#notification-settings
 
 %script#templ-user-conf(type='text/template')
   .row
@@ -31,4 +36,34 @@
           %label 新パスワードの再確認
           %input.pass-retype(type='password')
           %input.button.small.round(type='submit' value='送信')
+
+%script#templ-notification-settings(type='text/template')
+  .row
+    .large-6.columns
+      %fieldset
+        %legend 通知設定
+        .push-status
+          <% if (push_supported) { %>
+          <% if (push_subscribed) { %>
+          %p この端末では通知が有効です。
+          %button.button.small.round.alert.btn-unsubscribe 通知を無効にする
+          <% } else { %>
+          %button.button.small.round.btn-subscribe 通知を有効にする
+          <% } %>
+          <% } else { %>
+          %p お使いのブラウザは通知に対応していません。
+          %p.ios-hint
+            iOS をお使いの方: Safari で景虎を開き、共有ボタンから「ホーム画面に追加」を行ってから通知を有効にしてください。
+          <% } %>
+        <% if (push_subscribed) { %>
+        %hr
+        %form.notification-form
+          <label><input type="checkbox" name="new_event" <%= new_event ? 'checked' : '' %>> 新規大会/行事が追加された時に通知する</label>
+          <label><input type="checkbox" name="deadline_reminder" <%= deadline_reminder ? 'checked' : '' %>> 締切当日にリマインダーを受け取る</label>
+          <label><input type="checkbox" name="event_comment" <%= event_comment ? 'checked' : '' %>> 登録済み大会にコメントがついた時に通知する</label>
+          <% if (is_admin) { %>
+          <label><input type="checkbox" name="admin_deadline" <%= admin_deadline ? 'checked' : '' %>> [管理者] 締切到来通知を受け取る</label>
+          <% } %>
+          %input.button.small.round.btn-save-settings(type='button' value='設定を保存')
+        <% } %>
 

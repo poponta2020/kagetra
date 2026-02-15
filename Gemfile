@@ -26,6 +26,8 @@ gem 'rubyzip' # zip/unzip archive
 gem 'sequel'
 gem 'pg' # PostgreSQL interface
 
+gem 'web-push' # Web Push notifications (VAPID)
+
 # only used for developing
 gem 'rspec' # BDD Testing
 gem 'selenium-webdriver' # Testing in browser
