@@ -181,7 +181,7 @@ define (require,exports,module) ->
           av.render()
           deadline_before.find(".body").append(av.$el)
           deadline_before.show()
-        if m.get('deadline_after')
+        if m.get('deadline_after') and g_sub_admin
           av = new EventAfterView(model:m)
           av.render()
           deadline_after.find(".body").append(av.$el)
