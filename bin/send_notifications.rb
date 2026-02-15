@@ -74,7 +74,7 @@ class NotificationBatch
         next if already_chosen
 
         payload = {
-          title: "「#{ev.name}」の申込締切は本日です",
+          title: "「#{ev.name}」の締切は本日です",
           url: "/top"
         }
         WebPushSender.send_to_user(user_id, payload)
