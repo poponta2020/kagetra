@@ -55,8 +55,10 @@ class NotificationBatch
 
     # LINE: 参加可能な級グループへ送信
     new_events.each do |ev|
-      date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
-      message = "【新規大会案内】「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました"
+      date_str = ev.date ? "#{ev.date.strftime("%-m月%-d日")}（#{G_WEEKDAY_JA[ev.date.wday]}）" : ""
+      deadline_str = ev.deadline ? "#{ev.deadline.strftime("%-m月%-d日")}" : nil
+      message = "【大会案内】\n#{date_str.empty? ? '' : "#{date_str} "}#{ev.name}\n\nの案内が来ました！\n詳細は景虎の方をご覧ください。"
+      message += "\n\n締切は#{deadline_str}です。" if deadline_str
       line_notify_by_grade(ev, message)
     end
   end
@@ -93,7 +95,7 @@ class NotificationBatch
 
     # LINE: 参加可能な級グループへ送信
     deadline_events.each do |ev|
-      message = "【締切当日】「#{ev.name}」の申込締切は本日です"
+      message = "【締切】\n#{ev.name}の締切は本日までです！\nご確認のほどお願いします。"
       line_notify_by_grade(ev, message)
     end
   end
