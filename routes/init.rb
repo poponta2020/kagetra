@@ -15,3 +15,4 @@ require_relative 'wiki'
 require_relative 'login_log'
 require_relative 'map'
 require_relative 'push'
+require_relative 'line_webhook_test' # !! 一時: グループID取得後に削除

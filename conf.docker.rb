@@ -112,3 +112,12 @@ CONF_BKUP_MAIL_SPLIT_SIZE="20MB"
 CONF_VAPID_PUBLIC_KEY = "BHqBB3iGSo_d4BPGa3PTkECfMSci5PJOSqKvazKD8zcaJMj09e8x8KUlQO9GLHB2jakRFMLbXMfpPU6HGWMG_ag="
 CONF_VAPID_PRIVATE_KEY = "hOZkzNTBFPMlGTFqOWiGEAKQ7mLyCTdMQVq_K8K1vTc="
 CONF_VAPID_SUBJECT = "mailto:dev@localhost"
+
+# LINE通知設定（開発用ダミー値 - 本番conf.rbには実際の値を設定すること）
+LINE_GROUP_BOTS = {
+  10 => { name: 'A級', token: '', group_id: '' },
+  11 => { name: 'B級', token: '', group_id: '' },
+  12 => { name: 'C級', token: '', group_id: '' },
+  13 => { name: 'D級', token: '', group_id: '' },
+  14 => { name: 'E級', token: '', group_id: '' },
+}

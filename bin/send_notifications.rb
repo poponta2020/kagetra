@@ -8,6 +8,7 @@
 
 require_relative '../inits/init'
 require_relative '../lib/web_push_sender'
+require_relative '../lib/line_sender'
 
 class NotificationBatch
   def initialize
@@ -38,7 +39,7 @@ class NotificationBatch
 
     puts "  新規大会/行事: #{new_events.length}件"
 
-    # 通知ONの全購読ユーザーに送信
+    # Web Push: 通知ONの全購読ユーザーに送信
     users_with_setting(:new_event).each do |user_id|
       new_events.each do |ev|
         date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
@@ -49,6 +50,13 @@ class NotificationBatch
         WebPushSender.send_to_user(user_id, payload)
         @sent_count += 1
       end
+    end
+
+    # LINE: 参加可能な級グループへ送信
+    new_events.each do |ev|
+      date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
+      message = "【新規大会案内】「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました"
+      line_notify_by_grade(ev, message)
     end
   end
 
@@ -80,6 +88,12 @@ class NotificationBatch
         WebPushSender.send_to_user(user_id, payload)
         @sent_count += 1
       end
+    end
+
+    # LINE: 参加可能な級グループへ送信
+    deadline_events.each do |ev|
+      message = "【締切当日】「#{ev.name}」の申込締切は本日です"
+      line_notify_by_grade(ev, message)
     end
   end
 
@@ -150,6 +164,15 @@ class NotificationBatch
 
     NotificationSetting.where(user_id: subscribed_user_ids, trigger => true)
       .map(&:user_id)
+  end
+
+  # イベントのforbidden_attrsを参照し、参加可能な級グループへLINE送信
+  def line_notify_by_grade(ev, message)
+    return unless defined?(LINE_GROUP_BOTS)
+    LINE_GROUP_BOTS.each do |attr_value_id, _|
+      next if ev.forbidden_attrs.include?(attr_value_id)
+      LineSender.send_to_grade(attr_value_id, message)
+    end
   end
 
   # 管理者かつ指定トリガーがONの購読ユーザーIDの一覧
