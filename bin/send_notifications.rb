@@ -23,6 +23,7 @@ class NotificationBatch
   def run
     puts "[#{@now}] 通知バッチ開始"
 
+    cleanup_old_line_tmp
     notify_new_events
     notify_deadline_today
     notify_new_comments
@@ -192,7 +193,7 @@ class NotificationBatch
     image_urls = images.each_with_index.map { |_, i| "#{base_url}/public/line_tmp/#{token}/page#{i + 1}.jpg" }
 
     line_images_by_grade(ev, image_urls)
-    DocumentConverter.cleanup(ev.id)
+    # cleanup はバッチ冒頭の cleanup_old_line_tmp で翌日以降に実施
   end
 
   # イベントのforbidden_attrsを参照し、参加可能な級グループへ画像をLINE送信
@@ -210,6 +211,19 @@ class NotificationBatch
     LINE_GROUP_BOTS.each do |attr_value_id, _|
       next if ev.forbidden_attrs.include?(attr_value_id)
       LineSender.send_to_grade(attr_value_id, message)
+    end
+  end
+
+  # 1日以上前の line_tmp 一時ファイルを削除
+  def cleanup_old_line_tmp
+    dir = File.join(CONF_STORAGE_DIR, 'line_tmp')
+    return unless Dir.exist?(dir)
+    Dir.glob(File.join(dir, '*')).each do |entry|
+      next unless File.directory?(entry)
+      if File.mtime(entry) < Time.now - 86400
+        FileUtils.rm_rf(entry)
+        puts "  line_tmp cleanup: #{File.basename(entry)}"
+      end
     end
   end
 
