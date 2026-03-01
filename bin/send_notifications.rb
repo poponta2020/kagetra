@@ -34,7 +34,8 @@ class NotificationBatch
 
   # T-01: 新規大会/行事が追加された
   def notify_new_events
-    new_events = Event.where(done: false).where{created_at >= @since}.all
+    since = @since
+    new_events = Event.where(done: false).where{created_at >= since}.all
     return if new_events.empty?
 
     puts "  新規大会/行事: #{new_events.length}件"
@@ -54,8 +55,10 @@ class NotificationBatch
 
     # LINE: 参加可能な級グループへ送信
     new_events.each do |ev|
-      date_str = ev.date ? ev.date.strftime("%-m/%-d") : ""
-      message = "【新規大会案内】「#{ev.name}」#{date_str.empty? ? '' : "(#{date_str}) "}が追加されました"
+      date_str = ev.date ? "#{ev.date.strftime("%-m月%-d日")}（#{G_WEEKDAY_JA[ev.date.wday]}）" : ""
+      deadline_str = ev.deadline ? "#{ev.deadline.strftime("%-m月%-d日")}" : nil
+      message = "【大会案内】\n#{date_str.empty? ? '' : "#{date_str} "}#{ev.name}\n\nの案内が来ました！\n詳細は景虎の方をご覧ください。"
+      message += "\n\n締切は#{deadline_str}です。" if deadline_str
       line_notify_by_grade(ev, message)
     end
   end
@@ -92,7 +95,7 @@ class NotificationBatch
 
     # LINE: 参加可能な級グループへ送信
     deadline_events.each do |ev|
-      message = "【締切当日】「#{ev.name}」の申込締切は本日です"
+      message = "【締切】\n#{ev.name}の締切は本日までです！\nご確認のほどお願いします。"
       line_notify_by_grade(ev, message)
     end
   end
@@ -100,7 +103,8 @@ class NotificationBatch
   # T-03: コメント新着
   def notify_new_comments
     # 前日以降に投稿されたコメントのあるイベントを検索
-    recent_comments = EventComment.where{created_at >= @since}.all
+    since = @since
+    recent_comments = EventComment.where{created_at >= since}.all
     return if recent_comments.empty?
 
     # イベントごとにコメント数を集計
