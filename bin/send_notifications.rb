@@ -34,7 +34,8 @@ class NotificationBatch
 
   # T-01: 新規大会/行事が追加された
   def notify_new_events
-    new_events = Event.where(done: false).where{created_at >= @since}.all
+    since = @since
+    new_events = Event.where(done: false).where{created_at >= since}.all
     return if new_events.empty?
 
     puts "  新規大会/行事: #{new_events.length}件"
@@ -100,7 +101,8 @@ class NotificationBatch
   # T-03: コメント新着
   def notify_new_comments
     # 前日以降に投稿されたコメントのあるイベントを検索
-    recent_comments = EventComment.where{created_at >= @since}.all
+    since = @since
+    recent_comments = EventComment.where{created_at >= since}.all
     return if recent_comments.empty?
 
     # イベントごとにコメント数を集計
