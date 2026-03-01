@@ -2,6 +2,15 @@
 class MainApp < Sinatra::Base
   def filter_public(splat)
     path = "/" + splat
+    # LINE画像配信用の一時ファイルは認証不要で公開
+    if path.start_with?('/line_tmp/')
+      file = File.expand_path(File.join(CONF_STORAGE_DIR, splat))
+      base = File.expand_path(File.join(CONF_STORAGE_DIR, 'line_tmp'))
+      halt 404 unless file.start_with?(base) && File.exist?(file)
+      content_type 'image/jpeg'
+      send_file file
+      return
+    end
     # TODO: G_TOP_BAR_PUBLIC の wiki のページが増えるとここが非効率的になる
     # board_message は /public/api/board_message/ からもアクセスされるのでこっちにも入れておく
     halt(403,"this page is not public") unless G_TOP_BAR_PUBLIC.any?{|x|
