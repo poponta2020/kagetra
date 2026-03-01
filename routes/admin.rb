@@ -2,7 +2,7 @@
 class MainApp < Sinatra::Base
   namespace '/api/admin' do
     before do
-      halt 403 unless @user.admin
+      halt 403 unless @user && @user.admin
     end
     get '/list' do
       user_attrs = Hash[
