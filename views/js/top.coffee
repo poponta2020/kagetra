@@ -140,10 +140,17 @@ define (require,exports,module) ->
       "click #event-order .choice": "reorder"
       "click #add-event": "show_event_edit"
       "click #add-contest": "show_contest_edit"
+      "change .toggle-unreachable": "do_toggle_unreachable"
     show_event_edit: ->
       $ed.show_event_edit(new $ed.EventItemModel(kind:"party",id:"party"))
     show_contest_edit: ->
       $ed.show_event_edit(new $ed.EventItemModel(kind:"contest",id:"contest"))
+    do_toggle_unreachable: (ev) ->
+      @hide_unreachable = !$(ev.currentTarget).prop("checked")
+      @render()
+    should_show: (m) ->
+      return true unless @hide_unreachable
+      m.get('choice')? or (!m.get('forbidden') and (!m.get('deadline_day')? or m.get('deadline_day') >= 0))
     reorder: (ev) ->
       target = $(ev.currentTarget)
       order = target.data("order")
@@ -151,6 +158,7 @@ define (require,exports,module) ->
       @collection.sort()
     initialize: ->
       _.bindAll(this,"render","reorder")
+      @hide_unreachable = not g_sub_admin
       @collection = new EventListCollection()
       @listenTo(@collection,"sort", @render)
       @collection.set_comparator('date')
@@ -158,20 +166,22 @@ define (require,exports,module) ->
     render: ->
       @$el.html(@template())
       @$el.find(".choice[data-order='#{@collection.order}']").addClass("active")
+      @$el.find(".toggle-unreachable").prop("checked", !@hide_unreachable)
       @subviews = []
       deadline_before = @$el.find(".deadline-message .deadline-before")
       deadline_after = @$el.find(".deadline-message .deadline-after")
       for m in @collection.models
+        continue unless @should_show(m)
         v = new EventItemView(model:m)
         v.render()
         @$el.find(".event-body").append(v.$el)
         @subviews.push(v)
-        if m.get('deadline_alert') and not m.get('forbidden') and not m.get('choice')
+        if m.get('deadline_alert') and (g_sub_admin or (not m.get('forbidden') and not m.get('choice')))
           av = new EventAbbrevView(model:m,choice_model:v.choice_model)
           av.render()
           deadline_before.find(".body").append(av.$el)
           deadline_before.show()
-        if m.get('deadline_after')
+        if m.get('deadline_after') and g_sub_admin
           av = new EventAfterView(model:m)
           av.render()
           deadline_after.find(".body").append(av.$el)

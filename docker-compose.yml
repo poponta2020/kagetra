@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: kagetra
+      POSTGRES_PASSWORD: kagetra
+      POSTGRES_DB: kagetra
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    ports:
+      - "9292:9292"
+    volumes:
+      - .:/app
+      - bundle_cache:/bundle_cache
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: kagetra
+      POSTGRES_PASSWORD: kagetra
+      POSTGRES_DB: kagetra
+      RACK_ENV: development
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  bundle_cache:

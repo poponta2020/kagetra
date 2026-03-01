@@ -13,16 +13,25 @@ define (require,exports,module) ->
     template: _.template_braces($("#templ-result-list").html())
     events:
       "click .page" : "do_page"
+      "change .toggle-empty" : "do_toggle_empty"
     do_page: (ev)->
       year = $(ev.currentTarget).data("year")
       window.result_list_router.navigate("year/#{year}",{trigger:true})
       false
+    do_toggle_empty: (ev)->
+      @hide_empty = !$(ev.currentTarget).prop("checked")
+      @render()
     initialize: ->
+      @hide_empty = true
       @model = new ResultListModel(year:@options.year)
       @listenTo(@model,"sync",@render)
       @model.fetch()
     render: ->
-      @$el.html(@template(data:@model.toJSON()))
+      data = @model.toJSON()
+      if @hide_empty
+        data.list = _.filter(data.list, (x) -> x.user_count > 0)
+      @$el.html(@template(data:data))
+      @$el.find(".toggle-empty").prop("checked", !@hide_empty)
       @$el.appendTo("#result-list")
   init: ->
     $rc.init()

@@ -7,6 +7,7 @@
     %title #{G_APP_NAME} - #{yield_content(:title)}
     %link(rel="shortcut icon" href="/img/favicon.ico")
     %link(rel="apple-touch-icon" href="/img/apple-touch-icon.png")
+    %link(rel="manifest" href="/manifest.json")
     %link(rel="stylesheet" href="/css/v#{G_RESOURCE_VERSION}/app.css")
     %link(rel="stylesheet" href="/css/v#{G_RESOURCE_VERSION}/colorbox.css")
     %link(rel="stylesheet" href="/js/v#{G_RESOURCE_VERSION}/libs/select2/select2.css")
@@ -52,3 +53,10 @@
       requirejs.config({
       baseUrl: '/js/v#{G_RESOURCE_VERSION}'
       })
+    - if not @public_mode
+      %script
+        if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function(e) {
+        console.log('SW registration failed:', e);
+        });
+        }

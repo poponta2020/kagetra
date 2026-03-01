@@ -1,0 +1,10 @@
+.git
+.vendor
+node_modules
+deploy/log/*
+deploy/pid/*
+deploy/sock/*
+public/css
+public/js
+storage
+backups

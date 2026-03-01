@@ -26,9 +26,11 @@ gem 'rubyzip' # zip/unzip archive
 gem 'sequel'
 gem 'pg' # PostgreSQL interface
 
+gem 'web-push' # Web Push notifications (VAPID)
+
 # only used for developing
 gem 'rspec' # BDD Testing
 gem 'selenium-webdriver' # Testing in browser
-gem 'rack-coffee'
+gem 'coffee-script' # rack-coffee の代替（ローカル実装 lib/rack_coffee.rb を使用）
 gem 'tux' # CLI for sinatra
 #gem 'mecab', '0.996'

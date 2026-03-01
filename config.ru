@@ -2,6 +2,7 @@ require './inits/init'
 
 configure :development do
   Bundler.require(:default)
+  require './lib/rack_coffee'
   # Auto-Compile Sass to CSS
   Sass::Plugin.options.merge!({
     style: :expanded,
