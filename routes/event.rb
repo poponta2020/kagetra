@@ -295,4 +295,12 @@ class MainApp < Sinatra::Base
     end
     {list:query.map{|x|x.select_attr(:id,:name,:official,:kind,:description,:deadline,:date,:start_at,:end_at,:place,:public)}}
   end
+
+  # LINE画像送信用の一時変換画像を公開配信する（認証不要）
+  get '/public/line_tmp/:token/:filename' do
+    path = File.join(CONF_STORAGE_DIR, 'line_tmp', params[:token], params[:filename])
+    halt 404 unless File.exist?(path)
+    content_type 'image/jpeg'
+    send_file path
+  end
 end

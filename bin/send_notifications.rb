@@ -9,6 +9,7 @@
 require_relative '../inits/init'
 require_relative '../lib/web_push_sender'
 require_relative '../lib/line_sender'
+require_relative '../lib/document_converter'
 
 class NotificationBatch
   def initialize
@@ -60,6 +61,7 @@ class NotificationBatch
       message = "【大会案内】\n#{date_str.empty? ? '' : "#{date_str} "}#{ev.name}\n\nの案内が来ました！\n詳細は景虎の方をご覧ください。"
       message += "\n\n締切は#{deadline_str}です。" if deadline_str
       line_notify_by_grade(ev, message)
+      line_notify_attached_images(ev)
     end
   end
 
@@ -168,6 +170,38 @@ class NotificationBatch
 
     NotificationSetting.where(user_id: subscribed_user_ids, trigger => true)
       .map(&:user_id)
+  end
+
+  # 添付ファイルを画像変換してLINEに送信
+  def line_notify_attached_images(ev)
+    return unless ev.attached_count > 0
+
+    attached = ev.attacheds_dataset.order(Sequel.asc(:created_at)).first
+    return unless attached
+
+    ext = File.extname(attached.orig_name.to_s).downcase
+    return unless DocumentConverter::SUPPORTED_EXTS.include?(ext)
+
+    file_path = File.join(CONF_STORAGE_DIR, 'attached', 'event', attached.path.to_s)
+    images = DocumentConverter.to_images(file_path, attached.orig_name, ev.id)
+    return if images.empty?
+
+    puts "  添付画像送信: #{images.length}ページ (#{attached.orig_name})"
+    token = DocumentConverter.token_for(ev.id)
+    base_url = "https://hokudaicarta.com"
+    image_urls = images.each_with_index.map { |_, i| "#{base_url}/public/line_tmp/#{token}/page#{i + 1}.jpg" }
+
+    line_images_by_grade(ev, image_urls)
+    DocumentConverter.cleanup(ev.id)
+  end
+
+  # イベントのforbidden_attrsを参照し、参加可能な級グループへ画像をLINE送信
+  def line_images_by_grade(ev, image_urls)
+    return unless defined?(LINE_GROUP_BOTS)
+    LINE_GROUP_BOTS.each do |attr_value_id, _|
+      next if ev.forbidden_attrs.include?(attr_value_id)
+      LineSender.send_images_to_grade(attr_value_id, image_urls)
+    end
   end
 
   # イベントのforbidden_attrsを参照し、参加可能な級グループへLINE送信
