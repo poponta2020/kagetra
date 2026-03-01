@@ -59,7 +59,7 @@ class NotificationBatch
     new_events.each do |ev|
       date_str = ev.date ? "#{ev.date.strftime("%-m月%-d日")}（#{G_WEEKDAY_JA[ev.date.wday]}）" : ""
       deadline_str = ev.deadline ? "#{ev.deadline.strftime("%-m月%-d日")}" : nil
-      message = "【大会案内】\n#{date_str.empty? ? '' : "#{date_str} "}#{ev.name}\n\nの案内が来ました！\n詳細は景虎の方をご覧ください。"
+      message = "【大会案内】\n#{date_str.empty? ? '' : "#{date_str} "}#{ev.name}\n\nの案内が来ました！\n大会要項は添付画像もしくは景虎でご確認ください。"
       message += "\n\n締切は#{deadline_str}です。" if deadline_str
       line_notify_by_grade(ev, message)
       line_notify_attached_images(ev)
