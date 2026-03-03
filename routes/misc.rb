@@ -132,6 +132,9 @@ class MainApp < Sinatra::Base
   get '/etc' do
     redirect '/top'
   end
+  get '/application_flow' do
+    haml :application_flow
+  end
   get '/haml/v:resource_version/:prefix' do
     # ブラウザ側にキャッシュさせるのでhamlファイルには@userなどの動的な情報が含まれないようにすること
     expires (17*86400), :public

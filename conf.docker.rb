@@ -29,6 +29,7 @@ G_TOP_BAR_PRIVATE = [
   {route:"bbs",      name:"掲示板"},
   {route:"result",   name:"大会結果"},
   {route:"schedule", name:"予定表"},
+  {route:"application_flow", name:"申込管理"},
   {route:"wiki",     name:"Wiki"},
   {route:"album",    name:"アルバム"},
   {route:"map",    name:"地図"},
@@ -82,6 +83,15 @@ CONF_CONTEST_DEFAULT_AGGREGATE_ATTR = "級"
 CONF_CONTEST_DEFAULT_FORBIDDEN_ATTRS = {"全日協" => ["×"]}
 CONF_PARTY_DEFAULT_AGGREGATE_ATTR = "学年"
 CONF_PROMOTION_ATTRS = ["級","段位"]
+
+# 申込フロー管理: 級別デフォルト参加費
+CONF_DEFAULT_CONTEST_FEES = {
+  "A級" => 3000,
+  "B級" => 2500,
+  "C級" => 2000,
+  "D級" => 1500,
+  "E級" => 1000
+}
 
 CONF_ADDRBOOK_KEYS = ['名前','ふりがな','E-Mail','生年月日','所属','出身高校','電話番号','郵便番号1','住所1','郵便番号2','住所2','メモ1','メモ2']
 

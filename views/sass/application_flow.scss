@@ -1,0 +1,215 @@
+// 申込管理画面のスタイル
+
+.flow-list-table {
+  width: 100%;
+  margin-top: 20px;
+
+  th {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .show-detail {
+    color: #036;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #63F;
+    }
+  }
+
+  .step-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background-color: #63F;
+    color: white;
+    border-radius: 3px;
+    font-weight: bold;
+  }
+
+  .next-action {
+    color: #666;
+    font-size: 90%;
+  }
+}
+
+.no-data {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.event-info {
+  background-color: #f9f9f9;
+  padding: 15px;
+
+  dl {
+    margin-bottom: 0;
+
+    dt {
+      font-weight: bold;
+      display: inline-block;
+      width: 150px;
+      margin-right: 10px;
+    }
+
+    dd {
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.flow-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  overflow-x: auto;
+
+  .flow-step {
+    text-align: center;
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    min-width: 120px;
+
+    &.completed {
+      background-color: #d4edda;
+      border-color: #28a745;
+
+      .flow-step-number {
+        background-color: #28a745;
+      }
+    }
+
+    &.current {
+      background-color: #cce5ff;
+      border-color: #004085;
+      border-width: 3px;
+      box-shadow: 0 0 10px rgba(0, 64, 133, 0.3);
+
+      .flow-step-number {
+        background-color: #004085;
+      }
+    }
+
+    .flow-step-number {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .flow-step-name {
+      font-weight: bold;
+      font-size: 14px;
+    }
+  }
+
+  .flow-arrow {
+    padding: 0 10px;
+    font-size: 24px;
+    color: #999;
+  }
+}
+
+.current-action {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 15px;
+
+  h5 {
+    margin-bottom: 10px;
+    color: #856404;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+.flow-detail-info {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+
+  dl {
+    margin-bottom: 0;
+
+    dt {
+      font-weight: bold;
+      display: inline-block;
+      width: 180px;
+      margin-right: 10px;
+      margin-bottom: 8px;
+    }
+
+    dd {
+      display: inline-block;
+      margin-bottom: 8px;
+
+      pre {
+        background: white;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        white-space: pre-wrap;
+        margin: 5px 0 0 0;
+      }
+    }
+  }
+}
+
+.participants-table {
+  width: 100%;
+  margin-top: 15px;
+  font-size: 14px;
+
+  th {
+    background-color: #e9ecef;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+#container-flow-detail {
+  .reveal-modal {
+    &.xlarge {
+      width: 90%;
+      max-width: 1200px;
+    }
+  }
+}
+
+.button-group {
+  margin-top: 20px;
+
+  button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+}

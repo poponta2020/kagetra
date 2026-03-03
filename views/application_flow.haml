@@ -1,0 +1,165 @@
+- content_for :title do
+  申込管理
+
+- content_for :head do
+  %link(rel="stylesheet" href="/css/v#{G_CSS_VERSION}/application_flow.css")
+
+- content_for :body_bottom do
+  %script(src="/js/v#{G_JS_VERSION}/application_flow.js")
+
+.row
+  .large-12.columns
+    %h3 申込管理
+
+#application-flow-list
+
+%script#templ-flow-list(type='text/template')
+  .row
+    .large-12.columns
+      %p 締切後の大会の事務処理フローを管理します
+      <% if(data.length === 0){ %>
+      %p.no-data フロー管理対象の大会はありません
+      <% } else { %>
+      %table.flow-list-table
+        %thead
+          %tr
+            %th 大会名
+            %th 開催日
+            %th 参加者数
+            %th 現在のステップ
+            %th 次のアクション
+        %tbody
+          <% _.each(data, function(item){ %>
+          %tr.flow-list-item(data-id='{{item.event_id}}')
+            %td
+              %a.show-detail(href='#') <%- item.event_name %>
+            %td <%= item.event_date %>
+            %td <%= item.participant_count %>名
+            %td
+              %span.step-badge <%= item.step_name %>
+            %td.next-action <%- item.next_action %>
+          <% }) %>
+      <% } %>
+
+%script#templ-flow-detail(type='text/template')
+  .row
+    .large-12.columns
+      %h4 <%- data.event_name %>
+
+  .row
+    .large-12.columns
+      .panel.event-info
+        %dl
+          %dt 正式名称:
+          %dd <%- data.event_formal_name || data.event_name %>
+          %dt 開催日:
+          %dd <%= data.event_date %>
+          %dt 開催場所:
+          %dd <%- data.place || 'なし' %>
+          %dt 締切日:
+          %dd <%= data.deadline %>
+          %dt 参加者数:
+          %dd <%= data.participant_count %>名
+
+  .row
+    .large-12.columns
+      .flow-chart
+        <% _.each(data.steps, function(step, idx){ %>
+        <% if(step.enabled){ %>
+        .flow-step(class='{{step.completed ? "completed" : ""}} {{step.current ? "current" : ""}}')
+          .flow-step-number <%= step.number %>
+          .flow-step-name <%- step.name %>
+        <% if(idx < data.steps.length - 1){ %>
+        .flow-arrow &rarr;
+        <% } %>
+        <% } %>
+        <% }) %>
+
+  .row
+    .large-12.columns
+      .panel.current-action
+        %h5 現在のタスク
+        %p <%- data.current_action %>
+
+  <% if(data.is_admin){ %>
+  .row
+    .large-12.columns
+      %h5 詳細情報
+      .flow-detail-info
+        %dl
+          %dt 抽選あり:
+          %dd <%= data.has_lottery ? 'あり' : 'なし' %>
+          %dt 支払方法:
+          %dd <%= data.payment_method === 'advance' ? '事前振込' : '現地払い' %>
+          <% if(data.application_sent_at){ %>
+          %dt 申込書送付日:
+          %dd <%= data.application_sent_at %>
+          <% } %>
+          <% if(data.response_received_at){ %>
+          %dt 主催者返信受領日:
+          %dd <%= data.response_received_at %>
+          <% } %>
+          <% if(data.payment_deadline){ %>
+          %dt 支払期限:
+          %dd <%= data.payment_deadline %>
+          <% } %>
+          <% if(data.payment_destination){ %>
+          %dt 振込先:
+          %dd <%- data.payment_destination %>
+          <% } %>
+          <% if(data.total_fee){ %>
+          %dt 合計参加費:
+          %dd <%= data.total_fee %>円
+          <% } %>
+          <% if(data.payment_completed_at){ %>
+          %dt 支払完了日:
+          %dd <%= data.payment_completed_at %>
+          <% } %>
+          <% if(data.memo){ %>
+          %dt メモ:
+          %dd
+            %pre <%- data.memo %>
+          <% } %>
+
+  .row
+    .large-12.columns
+      .button-group
+        %button.button.small.show-participants 申込書作成用データ確認
+        %button.button.small.export-csv CSV出力
+        <% if(data.current_step < 6){ %>
+        %button.button.small.success.proceed-step 次のステップに進む
+        <% } %>
+        %button.button.small.secondary.back-to-list 一覧に戻る
+  <% } else { %>
+  .row
+    .large-12.columns
+      %button.button.small.secondary.back-to-list 一覧に戻る
+  <% } %>
+
+  #participants-container
+
+%script#templ-participants(type='text/template')
+  .row
+    .large-12.columns
+      %h5 参加者一覧
+      %table.participants-table
+        %thead
+          %tr
+            %th 名前
+            %th ふりがな
+            %th 級
+            %th 段位
+            %th 今年度公認大会出場回数
+        %tbody
+          <% _.each(data, function(p){ %>
+          %tr
+            %td <%- p.name %>
+            %td <%- p.furigana %>
+            %td <%= p.grade %>
+            %td <%= p.dan %>
+            %td <%= p.participation_count %>回
+          <% }) %>
+
+#container-flow-detail.reveal-modal.xlarge(data-reveal)
+  %a.close-reveal-modal &#215;
+  #flow-detail-content
