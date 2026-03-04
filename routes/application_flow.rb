@@ -37,7 +37,7 @@ class MainApp < Sinatra::Base
           step_name: flow&.step_name || "会内締切",
           next_action: flow&.current_action || "参加者を確認し、申込書を作成してください"
         }
-      end.to_json
+      end
     end
 
     # 申込フロー詳細を取得
@@ -97,7 +97,7 @@ class MainApp < Sinatra::Base
         is_admin: @user.admin
       }
 
-      result.to_json
+      result
     end
 
     # 参加者情報を取得（申込書作成用）
@@ -109,7 +109,7 @@ class MainApp < Sinatra::Base
       # 参加者一覧を取得
       participants = get_participants_for_application(ev)
 
-      participants.to_json
+      participants
     end
 
     # CSV出力
@@ -143,7 +143,7 @@ class MainApp < Sinatra::Base
 
       flow.proceed_to_next_step
 
-      {success: true, current_step: flow.current_step, step_name: flow.step_name}.to_json
+      {success: true, current_step: flow.current_step, step_name: flow.step_name}
     end
 
     # フロー情報更新
@@ -164,7 +164,7 @@ class MainApp < Sinatra::Base
 
       flow.update(update_params)
 
-      {success: true}.to_json
+      {success: true}
     end
 
     private

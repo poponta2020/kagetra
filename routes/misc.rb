@@ -133,7 +133,10 @@ class MainApp < Sinatra::Base
     redirect '/top'
   end
   get '/application_flow' do
-    haml :application_flow
+    haml :application_flow, :encoding => 'utf-8'
+  end
+  get '/application_flow/:event_id' do
+    haml :application_flow_detail, :encoding => 'utf-8'
   end
   get '/haml/v:resource_version/:prefix' do
     # ブラウザ側にキャッシュさせるのでhamlファイルには@userなどの動的な情報が含まれないようにすること

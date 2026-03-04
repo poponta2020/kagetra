@@ -1,0 +1,139 @@
+- content_for :title do
+  申込管理 - 詳細
+
+- content_for :js_start do
+  application_flow_detail
+
+- content_for :css do
+  application_flow
+
+= haml :top_bar
+
+.row
+  .large-12.columns
+    %h3 申込管理 - 詳細
+
+#application-flow-detail
+
+%script#templ-flow-detail(type='text/template')
+  .row
+    .large-12.columns
+      %h4 <%- data.event_name %>
+
+  .row
+    .large-12.columns
+      .panel.event-info
+        %dl
+          %dt 正式名称:
+          %dd <%- data.event_formal_name || data.event_name %>
+          %dt 開催日:
+          %dd <%= data.event_date %>
+          %dt 開催場所:
+          %dd <%- data.place || 'なし' %>
+          %dt 締切日:
+          %dd <%= data.deadline %>
+          %dt 参加者数:
+          %dd <%= data.participant_count %>名
+
+  .row
+    .large-12.columns
+      .flow-chart
+        :plain
+          <% _.each(data.steps, function(step, idx){ %>
+          <% if(step.enabled){ %>
+          <div class="flow-step <%= step.completed ? 'completed' : '' %> <%= step.current ? 'current' : '' %>">
+            <div class="flow-step-number"><%= step.number %></div>
+            <div class="flow-step-name"><%- step.name %></div>
+          </div>
+          <% if(idx < data.steps.length - 1){ %>
+          <div class="flow-arrow">&rarr;</div>
+          <% } %>
+          <% } %>
+          <% }) %>
+
+  .row
+    .large-12.columns
+      .panel.current-action
+        %h5 現在のタスク
+        %p <%- data.current_action %>
+
+  <% if(data.is_admin){ %>
+  .row
+    .large-12.columns
+      %h5 詳細情報
+      .flow-detail-info
+        %dl
+          %dt 抽選あり:
+          %dd <%= data.has_lottery ? 'あり' : 'なし' %>
+          %dt 支払方法:
+          %dd <%= data.payment_method === 'advance' ? '事前振込' : '現地払い' %>
+          <% if(data.application_sent_at){ %>
+          %dt 申込書送付日:
+          %dd <%= data.application_sent_at %>
+          <% } %>
+          <% if(data.response_received_at){ %>
+          %dt 主催者返信受領日:
+          %dd <%= data.response_received_at %>
+          <% } %>
+          <% if(data.payment_deadline){ %>
+          %dt 支払期限:
+          %dd <%= data.payment_deadline %>
+          <% } %>
+          <% if(data.payment_destination){ %>
+          %dt 振込先:
+          %dd <%- data.payment_destination %>
+          <% } %>
+          <% if(data.total_fee){ %>
+          %dt 合計参加費:
+          %dd <%= data.total_fee %>円
+          <% } %>
+          <% if(data.payment_completed_at){ %>
+          %dt 支払完了日:
+          %dd <%= data.payment_completed_at %>
+          <% } %>
+          <% if(data.memo){ %>
+          %dt メモ:
+          %dd
+            %pre <%- data.memo %>
+          <% } %>
+
+  .row
+    .large-12.columns
+      .button-group
+        %button.button.small.show-participants 申込書作成用データ確認
+        %button.button.small.export-csv CSV出力
+        <% if(data.current_step < 6){ %>
+        %button.button.small.success.proceed-step 次のステップに進む
+        <% } %>
+        %a.button.small.secondary(href='/application_flow') 一覧に戻る
+  <% } else { %>
+  .row
+    .large-12.columns
+      %a.button.small.secondary(href='/application_flow') 一覧に戻る
+  <% } %>
+
+  #participants-container
+
+%script#templ-participants(type='text/template')
+  .row
+    .large-12.columns
+      %h5 参加者一覧
+      %table.participants-table
+        %thead
+          %tr
+            %th 名前
+            %th ふりがな
+            %th 級
+            %th 段位
+            %th 今年度公認大会出場回数
+        %tbody
+          :plain
+            <% _.each(data, function(p){ %>
+            <tr>
+              <td><%- p.name %></td>
+              <td><%- p.furigana %></td>
+              <td><%= p.grade %></td>
+              <td><%= p.dan %></td>
+              <td><%= p.participation_count %>回</td>
+            </tr>
+            <% }) %>
