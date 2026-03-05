@@ -7,133 +7,213 @@
 - content_for :css do
   application_flow
 
-= haml :top_bar
-
-.row
-  .large-12.columns
-    %h3 申込管理 - 詳細
-
 #application-flow-detail
 
 %script#templ-flow-detail(type='text/template')
-  .row
-    .large-12.columns
-      %h4 <%- data.event_name %>
+  :plain
+    <!-- Header -->
+    <div class="detail-header">
+      <a href="/application_flow" class="back-button">
+        <span>←</span>
+      </a>
+      <h2 class="header-title"><%- data.event_name %></h2>
+    </div>
 
-  .row
-    .large-12.columns
-      .panel.event-info
-        %dl
-          %dt 正式名称:
-          %dd <%- data.event_formal_name || data.event_name %>
-          %dt 開催日:
-          %dd <%= data.event_date %>
-          %dt 開催場所:
-          %dd <%- data.place || 'なし' %>
-          %dt 締切日:
-          %dd <%= data.deadline %>
-          %dt 参加者数:
-          %dd <%= data.participant_count %>名
+    <!-- Main Scrollable Content -->
+    <div class="detail-content">
 
-  .row
-    .large-12.columns
-      .flow-chart
-        :plain
-          <% _.each(data.steps, function(step, idx){ %>
+      <!-- Timeline Summary -->
+      <div class="timeline-summary">
+        <% _.each(data.steps, function(step, idx){ %>
           <% if(step.enabled){ %>
-          <div class="flow-step <%= step.completed ? 'completed' : '' %> <%= step.current ? 'current' : '' %>">
-            <div class="flow-step-number"><%= step.number %></div>
-            <div class="flow-step-name"><%- step.name %></div>
+            <div class="timeline-item <%= step.completed ? 'completed' : '' %> <%= step.current ? 'current' : '' %>">
+              <div class="timeline-connector">
+                <% if(idx > 0){ %>
+                  <div class="connector-line top"></div>
+                <% } %>
+                <div class="timeline-icon">
+                  <% if(step.completed){ %>
+                    <span class="check-icon">✓</span>
+                  <% } else if(step.current){ %>
+                    <span class="current-dot"></span>
+                  <% } else { %>
+                    <span class="step-num"><%= step.number %></span>
+                  <% } %>
+                </div>
+                <% if(idx < data.steps.length - 1){ %>
+                  <div class="connector-line bottom"></div>
+                <% } %>
+              </div>
+              <div class="timeline-content">
+                <p class="step-title"><%- step.name %></p>
+                <% if(step.current){ %>
+                  <p class="step-status current-badge">進行中</p>
+                <% } else if(step.completed){ %>
+                  <p class="step-status">完了</p>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        <% }) %>
+      </div>
+
+      <!-- Current Phase Card -->
+      <div class="current-phase-card">
+        <div class="phase-header">
+          <span class="deadline-badge">今日のタスク</span>
+          <div class="event-date-meta">
+            <span class="date-icon">📅</span>
+            <span><%= data.event_date %></span>
           </div>
-          <% if(idx < data.steps.length - 1){ %>
-          <div class="flow-arrow">&rarr;</div>
-          <% } %>
-          <% } %>
-          <% }) %>
+        </div>
+        <h1 class="phase-title"><%- data.step_name %></h1>
+        <p class="phase-description"><%- data.current_action %></p>
 
-  .row
-    .large-12.columns
-      .panel.current-action
-        %h5 現在のタスク
-        %p <%- data.current_action %>
+        <!-- Event Info -->
+        <div class="info-card">
+          <div class="info-row">
+            <span class="info-icon">🏢</span>
+            <div class="info-content">
+              <p class="info-label">開催場所</p>
+              <p class="info-value"><%- data.place || '未定' %></p>
+            </div>
+          </div>
+        </div>
 
-  <% if(data.is_admin){ %>
-  .row
-    .large-12.columns
-      %h5 詳細情報
-      .flow-detail-info
-        %dl
-          %dt 抽選あり:
-          %dd <%= data.has_lottery ? 'あり' : 'なし' %>
-          %dt 支払方法:
-          %dd <%= data.payment_method === 'advance' ? '事前振込' : '現地払い' %>
-          <% if(data.application_sent_at){ %>
-          %dt 申込書送付日:
-          %dd <%= data.application_sent_at %>
-          <% } %>
-          <% if(data.response_received_at){ %>
-          %dt 主催者返信受領日:
-          %dd <%= data.response_received_at %>
-          <% } %>
-          <% if(data.payment_deadline){ %>
-          %dt 支払期限:
-          %dd <%= data.payment_deadline %>
-          <% } %>
-          <% if(data.payment_destination){ %>
-          %dt 振込先:
-          %dd <%- data.payment_destination %>
-          <% } %>
-          <% if(data.total_fee){ %>
-          %dt 合計参加費:
-          %dd <%= data.total_fee %>円
-          <% } %>
-          <% if(data.payment_completed_at){ %>
-          %dt 支払完了日:
-          %dd <%= data.payment_completed_at %>
-          <% } %>
-          <% if(data.memo){ %>
-          %dt メモ:
-          %dd
-            %pre <%- data.memo %>
-          <% } %>
+        <div class="info-card">
+          <div class="info-row">
+            <span class="info-icon">👥</span>
+            <div class="info-content">
+              <p class="info-label">参加者数</p>
+              <p class="info-value"><%= data.participant_count %>名</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  .row
-    .large-12.columns
-      .button-group
-        %button.button.small.show-participants 申込書作成用データ確認
-        %button.button.small.export-csv CSV出力
-        <% if(data.current_step < 6){ %>
-        %button.button.small.success.proceed-step 次のステップに進む
+      <% if(data.is_admin){ %>
+      <!-- Detail Info Section -->
+      <div class="detail-info-section">
+        <h4 class="section-title">詳細情報</h4>
+
+        <% if(data.has_lottery){ %>
+        <div class="info-item">
+          <span class="item-label">抽選</span>
+          <span class="item-value">あり</span>
+        </div>
         <% } %>
-        %a.button.small.secondary(href='/application_flow') 一覧に戻る
-  <% } else { %>
-  .row
-    .large-12.columns
-      %a.button.small.secondary(href='/application_flow') 一覧に戻る
-  <% } %>
 
-  #participants-container
+        <% if(data.payment_method){ %>
+        <div class="info-item">
+          <span class="item-label">支払方法</span>
+          <span class="item-value"><%= data.payment_method === 'advance' ? '事前振込' : '現地払い' %></span>
+        </div>
+        <% } %>
+
+        <% if(data.application_sent_at){ %>
+        <div class="info-item">
+          <span class="item-label">申込書送付日</span>
+          <span class="item-value"><%= data.application_sent_at %></span>
+        </div>
+        <% } %>
+
+        <% if(data.response_received_at){ %>
+        <div class="info-item">
+          <span class="item-label">主催者返信受領日</span>
+          <span class="item-value"><%= data.response_received_at %></span>
+        </div>
+        <% } %>
+
+        <% if(data.payment_deadline){ %>
+        <div class="info-item">
+          <span class="item-label">支払期限</span>
+          <span class="item-value critical"><%= data.payment_deadline %></span>
+        </div>
+        <% } %>
+
+        <% if(data.payment_destination){ %>
+        <div class="info-item">
+          <span class="item-label">振込先</span>
+          <span class="item-value"><%- data.payment_destination %></span>
+        </div>
+        <% } %>
+
+        <% if(data.total_fee){ %>
+        <div class="info-item">
+          <span class="item-label">合計参加費</span>
+          <span class="item-value amount">¥<%= data.total_fee.toLocaleString() %></span>
+        </div>
+        <% } %>
+
+        <% if(data.payment_completed_at){ %>
+        <div class="info-item">
+          <span class="item-label">支払完了日</span>
+          <span class="item-value"><%= data.payment_completed_at %></span>
+        </div>
+        <% } %>
+
+        <% if(data.memo){ %>
+        <div class="memo-card">
+          <p class="memo-label">メモ</p>
+          <pre class="memo-content"><%- data.memo %></pre>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons-section">
+        <button class="action-btn secondary show-participants">
+          <span class="btn-icon">📋</span>
+          参加者データ確認
+        </button>
+        <button class="action-btn secondary export-csv">
+          <span class="btn-icon">💾</span>
+          CSV出力
+        </button>
+        <% if(data.current_step > 1){ %>
+          <button class="action-btn small regress-step">
+            <span class="btn-icon">↩</span>
+            前に戻す
+          </button>
+        <% } %>
+      </div>
+      <% } %>
+
+      <div id="participants-container"></div>
+    </div>
+
+    <!-- Fixed Bottom Action -->
+    <% if(data.is_admin && data.current_step < 6){ %>
+    <div class="bottom-action-bar">
+      <button class="primary-action-btn proceed-step">
+        <span class="btn-icon">✓</span>
+        次のステップに進む
+      </button>
+    </div>
+    <% } else { %>
+    <div class="bottom-action-bar">
+      <a href="/application_flow" class="primary-action-btn">
+        一覧に戻る
+      </a>
+    </div>
+    <% } %>
 
 %script#templ-participants(type='text/template')
-  .row
-    .large-12.columns
-      %h5 参加者一覧
-      %table.participants-table
-        %thead
-          %tr
-            %th 名前
-            %th ふりがな
-            %th 級
-            %th 段位
-            %th 今年度公認大会出場回数
-        %tbody
-          :plain
-            <% _.each(data, function(p){ %>
-            <tr>
-              <td><%- p.name %></td>
-              <td><%- p.furigana %></td>
-              <td><%= p.grade %></td>
-              <td><%= p.dan %></td>
-              <td><%= p.participation_count %>回</td>
-            </tr>
-            <% }) %>
+  :plain
+    <div class="participants-section">
+      <h5 class="participants-title">参加者一覧</h5>
+      <div class="participants-list">
+        <% _.each(data, function(p){ %>
+          <div class="participant-card">
+            <div class="participant-avatar">
+              <span class="avatar-icon">👤</span>
+            </div>
+            <div class="participant-info">
+              <p class="participant-name"><%- p.name %></p>
+              <p class="participant-meta"><%- p.furigana %> • <%= p.grade %> • <%= p.dan %></p>
+              <p class="participant-count">今年度出場: <%= p.participation_count %>回</p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>

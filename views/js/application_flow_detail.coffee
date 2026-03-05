@@ -20,6 +20,7 @@ define (require, exports, module) ->
       'click .show-participants': 'show_participants'
       'click .export-csv': 'export_csv'
       'click .proceed-step': 'proceed_step'
+      'click .regress-step': 'regress_step'
 
     initialize: (options) ->
       _.bindAll(this, 'render')
@@ -54,6 +55,22 @@ define (require, exports, module) ->
         dataType: 'json'
         success: (data) ->
           alert("#{data.step_name}に進みました")
+          that.model.fetch().done(that.render)
+        error: (xhr) ->
+          alert('エラーが発生しました')
+      false
+
+    regress_step: (ev) ->
+      ev.preventDefault()
+      return unless confirm('前のステップに戻りますか？')
+
+      that = this
+      $.ajax
+        url: "api/application_flow/regress/#{@event_id}"
+        type: 'PUT'
+        dataType: 'json'
+        success: (data) ->
+          alert("#{data.step_name}に戻りました")
           that.model.fetch().done(that.render)
         error: (xhr) ->
           alert('エラーが発生しました')

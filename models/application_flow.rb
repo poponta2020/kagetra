@@ -29,6 +29,14 @@ class EventApplicationFlow < Sequel::Model(:event_application_flows)
     end
   end
 
+  # 前のステップに戻る
+  def regress_to_previous_step
+    if current_step > 1
+      self.current_step -= 1
+      save
+    end
+  end
+
   # 現在のステップで必要なアクション
   def current_action
     case current_step

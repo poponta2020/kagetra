@@ -146,6 +146,19 @@ class MainApp < Sinatra::Base
       {success: true, current_step: flow.current_step, step_name: flow.step_name}
     end
 
+    # フロー戻し（前のステップに戻る）
+    put '/regress/:event_id' do
+      ev = Event[params[:event_id].to_i]
+      halt 404 if ev.nil?
+      halt 403 unless @user.admin # 管理者のみ
+
+      flow = EventApplicationFlow.first(event: ev) || create_flow_if_needed(ev)
+
+      flow.regress_to_previous_step
+
+      {success: true, current_step: flow.current_step, step_name: flow.step_name}
+    end
+
     # フロー情報更新
     put '/update/:event_id' do
       ev = Event[params[:event_id].to_i]
