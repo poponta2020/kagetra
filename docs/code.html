@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>技術仕様書 - モバイルアプリ開発</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-6 md:px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl">architecture</span>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">技術仕様書</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#overview">概要</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#tokens">トークン</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#components">コンポーネント</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#logic">ロジック</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-64 rounded-lg border-none bg-slate-100 dark:bg-slate-800 py-2 pl-10 pr-4 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary" placeholder="ドキュメントを検索..."/>
+</div>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-all">
+<span class="material-symbols-outlined">download</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border border-primary/30">
+<img class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSTjmNrUbli8zx-CMgqlIapMDbyMZg-Bh0A1MIfBRuIe-lltcrLu3Qzg9onK32OznXEJeG-e0Ym4MZyLomiUyOrCm7IBs_VUDfpagn7I1vj7Efxet8mt6js3723ZJke_uUvLKM9CFxplS_h6LEvmnXafZm4n679D0lm1EYhIQTiSCq5-IfxMCGkNfxLusiBw8Ly4wxqkj66C5v4qiQMN2WvC7ImpbXcSCbjzREmyUkHZWSKBduzz2vFFT1MuD2oltyUzkatLRhNAo"/>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 mb-8 text-sm">
+<span class="text-slate-500 dark:text-slate-400">ドキュメント</span>
+<span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+<span class="text-primary font-medium">モバイルアプリケーション技術仕様書 v1.0.4</span>
+</div>
+<!-- Hero Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-slate-200 dark:border-slate-800 pb-12">
+<div class="max-w-3xl">
+<h1 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight mb-4">
+                    モバイルアプリケーション<br/>技術仕様書
+                </h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+                    ユーザーフローに基づいた詳細設計定義。UIコンポーネントの挙動、デザイントークン、および開発者向けの実装ノートを含みます。
+                </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-xl">share</span>
+<span>共有する</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+<span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+<span>PDF書き出し</span>
+</button>
+</div>
+</div>
+<!-- 1. Project Overview -->
+<section class="mb-16 scroll-mt-24" id="overview">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">info</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">1. プロジェクト概要</h2>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+<div class="col-span-2 bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+<p class="mb-4 leading-relaxed">本プロジェクトは、モダンなクロスプラットフォーム（iOS/Android）アプリケーションの開発を目的としています。直感的なフロー管理と高度なステータス追跡機能を核とし、開発効率を最大化する共通コンポーネントライブラリを活用します。</p>
+<ul class="space-y-3 text-slate-600 dark:text-slate-400">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
+<span>ユーザーの行動をタイムライン形式で可視化するフロー管理システム</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
+<span>ダークモードとライトモードの完全対応と色覚への配慮</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
+<span>ステートレスなロジック設計による高い拡張性</span>
+</li>
+</ul>
+</div>
+<div class="bg-primary/5 border border-primary/20 p-6 rounded-xl">
+<h4 class="text-primary font-bold mb-4">開発スタック</h4>
+<div class="space-y-4">
+<div>
+<span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">Frontend</span>
+<span class="text-slate-900 dark:text-white font-medium">React Native / Tailwind CSS</span>
+</div>
+<div>
+<span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">State Management</span>
+<span class="text-slate-900 dark:text-white font-medium">Zustand / React Query</span>
+</div>
+<div>
+<span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">Testing</span>
+<span class="text-slate-900 dark:text-white font-medium">Jest / Detox</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Design Tokens -->
+<section class="mb-16 scroll-mt-24" id="tokens">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">2. デザイントークン</h2>
+</div>
+<!-- Color Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+<div class="space-y-2">
+<div class="h-20 w-full rounded-lg bg-primary"></div>
+<div>
+<span class="block font-bold text-sm">Primary</span>
+<span class="text-xs text-slate-500 font-mono">#137fec</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-20 w-full rounded-lg bg-background-dark border border-slate-700"></div>
+<div>
+<span class="block font-bold text-sm">Dark Background</span>
+<span class="text-xs text-slate-500 font-mono">#101922</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-20 w-full rounded-lg bg-slate-200"></div>
+<div>
+<span class="block font-bold text-sm">Slate 200</span>
+<span class="text-xs text-slate-500 font-mono">#e2e8f0</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-20 w-full rounded-lg bg-[#22c55e]"></div>
+<div>
+<span class="block font-bold text-sm">Success</span>
+<span class="text-xs text-slate-500 font-mono">#22c55e</span>
+</div>
+</div>
+</div>
+<!-- Typography & Spacing -->
+<div class="grid md:grid-cols-2 gap-8">
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+<h3 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">text_format</span>
+                        タイポグラフィ
+                    </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">H1 / Hero</span>
+<span class="font-black text-xl">36px / Black</span>
+</div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">Body Large</span>
+<span class="font-normal text-lg">18px / Normal</span>
+</div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">Labels</span>
+<span class="font-medium text-xs uppercase tracking-widest">12px / Medium</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+<h3 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+                        スペーシング &amp; シャドウ
+                    </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">Base Unit</span>
+<span class="font-medium">4px / 0.25rem</span>
+</div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">Border Radius</span>
+<span class="font-medium">8px (lg) / 12px (xl)</span>
+</div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+<span class="text-sm text-slate-500">Elevation 1</span>
+<span class="font-medium text-xs italic">0 4px 6px -1px rgb(0 0 0 / 0.1)</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Component Specs -->
+<section class="mb-16 scroll-mt-24" id="components">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">widgets</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. コンポーネント仕様</h2>
+</div>
+<div class="space-y-12">
+<!-- Timeline Component -->
+<div>
+<h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">タイムライン</h3>
+<div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-xl">
+<div class="flex flex-col gap-6 max-w-md mx-auto">
+<!-- Step 1 -->
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">check</span>
+</div>
+<div class="w-0.5 h-12 bg-primary"></div>
+</div>
+<div class="pt-1">
+<h4 class="font-bold text-slate-900 dark:text-white">アカウント作成</h4>
+<p class="text-sm text-slate-500">2023年10月24日 10:30</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full border-2 border-primary bg-background-dark flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="w-0.5 h-12 bg-slate-200 dark:bg-slate-700"></div>
+</div>
+<div class="pt-1">
+<h4 class="font-bold text-primary">プロファイル設定</h4>
+<p class="text-sm text-primary/80">進行中 - 入力待ち</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-lg">lock</span>
+</div>
+</div>
+<div class="pt-1">
+<h4 class="font-bold text-slate-400">セキュリティ検証</h4>
+<p class="text-sm text-slate-500 italic">プロファイル設定後に開始</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Cards & Buttons -->
+<div class="grid md:grid-cols-2 gap-8">
+<div>
+<h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">情報カード</h3>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border-l-4 border-primary shadow-sm space-y-3">
+<div class="flex justify-between items-start">
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">Featured</span>
+<span class="material-symbols-outlined text-slate-400">more_horiz</span>
+</div>
+<h4 class="font-bold text-lg">システムステータス</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400">すべてのサブシステムは正常に稼働しています。最終チェックは5分前に行われました。</p>
+<div class="flex gap-2 pt-2">
+<div class="h-1.5 flex-1 bg-primary rounded-full"></div>
+<div class="h-1.5 flex-1 bg-primary rounded-full"></div>
+<div class="h-1.5 flex-1 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">ボタンバリエーション</h3>
+<div class="space-y-4">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+<span>主要アクション</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+<button class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+<span>キャンセル</span>
+</button>
+<button class="w-full border-2 border-primary/30 text-primary hover:bg-primary/5 font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-xl">add</span>
+<span>新規作成</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. State Logic -->
+<section class="mb-16 scroll-mt-24" id="logic">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">cognition</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">4. 状態ロジック</h2>
+</div>
+<div class="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 dark:bg-slate-800 text-slate-500">
+<tr>
+<th class="px-6 py-4 font-bold uppercase tracking-wider">状態 (State)</th>
+<th class="px-6 py-4 font-bold uppercase tracking-wider">UI表現</th>
+<th class="px-6 py-4 font-bold uppercase tracking-wider">動作ロジック</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr>
+<td class="px-6 py-4 font-bold">
+<span class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-green-500"></span>
+                                    完了 (Completed)
+                                </span>
+</td>
+<td class="px-6 py-4">Primary 背景色 + Check アイコン</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">読み取り専用、再編集不可。タイムラインは実線で結合。</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-bold">
+<span class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                                    実行中 (Active)
+                                </span>
+</td>
+<td class="px-6 py-4">Primary ボーダー + Pulse アニメーション</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">現在フォーカスされているステップ。ユーザー入力が可能。</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-bold">
+<span class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-slate-400"></span>
+                                    待機中 (Pending)
+                                </span>
+</td>
+<td class="px-6 py-4">Slate 背景色 + Lock アイコン</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">前のステップが完了するまで非活性。タップしても無効。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 5. Developer Implementation Notes -->
+<section class="mb-16" id="implementation">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">code</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">5. 実装ノート</h2>
+</div>
+<div class="grid md:grid-cols-2 gap-6">
+<div class="bg-slate-900 text-slate-300 p-6 rounded-xl font-mono text-sm leading-relaxed border border-slate-800">
+<div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">
+<span class="text-slate-500">TimelineComponent.tsx</span>
+<span class="text-primary">TypeScript</span>
+</div>
+<pre><code>interface TimelineProps {
+  steps: Step[];
+  currentStepIndex: number;
+}
+
+const Timeline = ({ steps, currentStepIndex }: TimelineProps) =&gt; {
+  return steps.map((step, index) =&gt; (
+    &lt;StepItem 
+      status={getStatus(index, currentStepIndex)}
+      data={step}
+      isLast={index === steps.length - 1}
+    /&gt;
+  ));
+}</code></pre>
+</div>
+<div class="space-y-4">
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
+<h4 class="font-bold text-slate-900 dark:text-white mb-2">アクセシビリティ (a11y)</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400">
+                            すべてのインタラクティブ要素には適切な <code>aria-label</code> を付与し、スクリーンリーダーで現在のステータス（例：「ステップ2 実行中」）が正しく読み上げられるようにすること。
+                        </p>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
+<h4 class="font-bold text-slate-900 dark:text-white mb-2">パフォーマンス</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400">
+                            タイムラインのアニメーションは <code>Native Driver</code> を使用し、メインスレッドへの負荷を最小限に抑える。リストレンダリングには <code>FlashList</code> の使用を推奨。
+                        </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-10">
+<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3 text-slate-500">
+<span class="material-symbols-outlined">architecture</span>
+<span class="text-sm">© 2023 Application Flow Tech Docs</span>
+</div>
+<div class="flex gap-8 text-sm text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">利用規約</a>
+<a class="hover:text-primary transition-colors" href="#">プライバシーポリシー</a>
+<a class="hover:text-primary transition-colors" href="#">ヘルプセンター</a>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-xs text-slate-500 uppercase tracking-widest font-bold">System Online</span>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

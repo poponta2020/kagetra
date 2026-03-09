@@ -1,219 +1,308 @@
-- content_for :title do
-  申込管理 - 詳細
+-# -*- coding: utf-8 -*-
+!!!
+%html.dark{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %script{src: "https://cdn.tailwindcss.com?plugins=forms,container-queries"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel: "stylesheet"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap", rel: "stylesheet"}
+    %script#tailwind-config
+      :plain
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    %title 申込フロー詳細
+    :css
+      body {
+        min-height: max(884px, 100dvh);
+      }
+  %body.bg-background-light.dark\\:bg-background-dark.font-display.text-slate-900.dark\\:text-slate-100.antialiased
+    .relative.flex.h-screen.w-full.flex-col.overflow-hidden
+      / Header
+      .flex.items-center.bg-background-light.dark\\:bg-background-dark.p-4.pb-2.justify-between.border-b.border-slate-200.dark\\:border-slate-800
+        .text-slate-900.dark\\:text-slate-100.flex.size-10.shrink-0.items-center.justify-center.cursor-pointer#back-btn
+          %span.material-symbols-outlined arrow_back_ios
+        %h2#event-name.text-slate-900.dark\\:text-slate-100.text-lg.font-bold.leading-tight.tracking-tight.flex-1.text-center
+        .flex.w-10.items-center.justify-end
+          %button#menu-btn.flex.cursor-pointer.items-center.justify-center.text-slate-900.dark\\:text-slate-100
+            %span.material-symbols-outlined more_horiz
 
-- content_for :js_start do
-  application_flow_detail
+      / Main Content
+      .flex-1.overflow-y-auto
+        / Timeline
+        #timeline-container.px-4.py-4.space-y-0\\.5
+          / Will be populated by JavaScript
 
-- content_for :css do
-  application_flow
+        / Current Phase Card
+        #phase-card-container.px-4.pb-8
+          / Will be populated by JavaScript
 
-#application-flow-detail
+        / Participants Section
+        #participants-container.px-4.pb-20
+          / Will be populated by JavaScript
 
-%script#templ-flow-detail(type='text/template')
-  :plain
-    <!-- Header -->
-    <div class="detail-header">
-      <a href="/application_flow" class="back-button">
-        <span>←</span>
-      </a>
-      <h2 class="header-title"><%- data.event_name %></h2>
-    </div>
+      / Action Area (管理者のみ表示)
+      #action-area.p-4.bg-background-light\\/80.dark\\:bg-background-dark\\/80.backdrop-blur-md.border-t.border-slate-200.dark\\:border-slate-800{style: "display: none;"}
+        %button#action-btn.w-full.bg-primary.hover\\:bg-primary\\/90.text-white.font-bold.py-4.rounded-xl.shadow-lg.shadow-primary\\/20.flex.items-center.justify-center.gap-2.transition-transform.active\\:scale-\\[0\\.98\\]
+          %span.material-symbols-outlined arrow_forward
+          %span#action-text 次のステップへ進む
 
-    <!-- Main Scrollable Content -->
-    <div class="detail-content">
+      / Bottom Navigation
+      .flex.gap-2.border-t.border-slate-200.dark\\:border-slate-800.bg-white.dark\\:bg-slate-900.px-4.pb-6.pt-2
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400.dark\\:text-slate-500{href: "/"}
+          %span.material-symbols-outlined home
+          %p.text-\\[10px\\].font-medium ホーム
 
-      <!-- Timeline Summary -->
-      <div class="timeline-summary">
-        <% _.each(data.steps, function(step, idx){ %>
-          <% if(step.enabled){ %>
-            <div class="timeline-item <%= step.completed ? 'completed' : '' %> <%= step.current ? 'current' : '' %>">
-              <div class="timeline-connector">
-                <% if(idx > 0){ %>
-                  <div class="connector-line top"></div>
-                <% } %>
-                <div class="timeline-icon">
-                  <% if(step.completed){ %>
-                    <span class="check-icon">✓</span>
-                  <% } else if(step.current){ %>
-                    <span class="current-dot"></span>
-                  <% } else { %>
-                    <span class="step-num"><%= step.number %></span>
-                  <% } %>
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-primary{href: "/application_flow"}
+          %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} assignment
+          %p.text-\\[10px\\].font-medium 申込管理
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400.dark\\:text-slate-500{href: "#"}
+          %span.material-symbols-outlined account_circle
+          %p.text-\\[10px\\].font-medium プロフィール
+
+    :javascript
+      const eventId = #{@event_id};
+      let flowData = null;
+
+      document.getElementById('back-btn').addEventListener('click', () => {
+        window.location.href = '/application_flow';
+      });
+
+      async function loadFlowDetail() {
+        try {
+          const response = await fetch(`/api/application_flow/detail/${eventId}`);
+          flowData = await response.json();
+
+          renderEventHeader(flowData.event);
+          renderTimeline(flowData.flow);
+          renderPhaseCard(flowData.flow, flowData.event);
+          renderParticipants(flowData.participants);
+
+          if (flowData.editable) {
+            document.getElementById('action-area').style.display = 'block';
+            setupActionButton(flowData.flow);
+          }
+        } catch (error) {
+          console.error('Failed to load flow detail:', error);
+          alert('データの読み込みに失敗しました');
+        }
+      }
+
+      function renderEventHeader(event) {
+        document.getElementById('event-name').textContent = event.name;
+      }
+
+      function renderTimeline(flow) {
+        const container = document.getElementById('timeline-container');
+        const steps = flow.steps;
+
+        const html = steps.map((step, index) => {
+          const isLast = index === steps.length - 1;
+          const isCurrent = step.status === 'active';
+          const isCompleted = step.status === 'completed';
+
+          let iconHtml, textClasses, statusText;
+
+          if (isCompleted) {
+            iconHtml = '<span class="material-symbols-outlined text-green-500 !text-[20px]">check_circle</span>';
+            textClasses = 'opacity-60';
+            statusText = '完了';
+          } else if (isCurrent) {
+            iconHtml = '<div class="size-5 rounded-full bg-primary flex items-center justify-center ring-4 ring-primary/20"><div class="size-2 rounded-full bg-white"></div></div>';
+            textClasses = '';
+            statusText = '進行中';
+          } else {
+            iconHtml = '<span class="material-symbols-outlined text-slate-400 !text-[20px]">radio_button_unchecked</span>';
+            textClasses = 'opacity-40';
+            statusText = '未完了';
+          }
+
+          return `
+            <div class="grid grid-cols-[32px_1fr] gap-x-3 ${textClasses} ${isCurrent ? '' : 'items-center'}">
+              <div class="flex flex-col items-center">
+                ${index > 0 ? '<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-3"></div>' : ''}
+                ${iconHtml}
+                ${!isLast ? '<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-full"></div>' : ''}
+              </div>
+              <div class="${isCurrent ? 'pb-6' : 'py-1'}">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-medium ${isCurrent ? 'text-lg font-bold text-primary' : ''}">${step.name}${isCurrent ? ' (進行中)' : ''}</p>
+                  ${!isCurrent ? `<p class="text-xs">${statusText}</p>` : ''}
                 </div>
-                <% if(idx < data.steps.length - 1){ %>
-                  <div class="connector-line bottom"></div>
-                <% } %>
-              </div>
-              <div class="timeline-content">
-                <p class="step-title"><%- step.name %></p>
-                <% if(step.current){ %>
-                  <p class="step-status current-badge">進行中</p>
-                <% } else if(step.completed){ %>
-                  <p class="step-status">完了</p>
-                <% } %>
               </div>
             </div>
-          <% } %>
-        <% }) %>
-      </div>
+          `;
+        }).join('');
 
-      <!-- Current Phase Card -->
-      <div class="current-phase-card">
-        <div class="phase-header">
-          <span class="deadline-badge">今日のタスク</span>
-          <div class="event-date-meta">
-            <span class="date-icon">📅</span>
-            <span><%= data.event_date %></span>
-          </div>
-        </div>
-        <h1 class="phase-title"><%- data.step_name %></h1>
-        <p class="phase-description"><%- data.current_action %></p>
+        container.innerHTML = html;
+      }
 
-        <!-- Event Info -->
-        <div class="info-card">
-          <div class="info-row">
-            <span class="info-icon">🏢</span>
-            <div class="info-content">
-              <p class="info-label">開催場所</p>
-              <p class="info-value"><%- data.place || '未定' %></p>
+      function renderPhaseCard(flow, event) {
+        const container = document.getElementById('phase-card-container');
+        const currentStep = flow.steps.find(s => s.status === 'active');
+
+        if (!currentStep) return;
+
+        const cardHtml = `
+          <div class="bg-slate-100 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-[11px] font-bold tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded uppercase">Current Phase</span>
+            </div>
+
+            <h1 class="text-2xl font-black tracking-tight mb-2">${currentStep.name}</h1>
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+              ${getPhaseDescription(currentStep.number)}
+            </p>
+
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-slate-400">event</span>
+                <span>開催日: ${event.date || '未定'}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-slate-400">location_on</span>
+                <span>${event.place || '場所未定'}</span>
+              </div>
             </div>
           </div>
-        </div>
+        `;
 
-        <div class="info-card">
-          <div class="info-row">
-            <span class="info-icon">👥</span>
-            <div class="info-content">
-              <p class="info-label">参加者数</p>
-              <p class="info-value"><%= data.participant_count %>名</p>
+        container.innerHTML = cardHtml;
+      }
+
+      function getPhaseDescription(stepNumber) {
+        const descriptions = {
+          1: '参加申込の締切が完了しました。参加者が確定しています。',
+          2: '申込書を作成し、主催者に送付してください。',
+          3: '主催者からの受理連絡を待っています。',
+          4: '抽選結果の発表を待っています。',
+          5: '参加費の支払い手続きを行ってください。',
+          6: '申込手続きが完了しました。大会当日をお待ちください。'
+        };
+        return descriptions[stepNumber] || '';
+      }
+
+      function renderParticipants(participants) {
+        const container = document.getElementById('participants-container');
+
+        if (!participants || participants.length === 0) {
+          container.innerHTML = '<p class="text-slate-500">参加者情報がありません</p>';
+          return;
+        }
+
+        // Group by grade
+        const byGrade = {};
+        participants.forEach(p => {
+          const grade = p.grade || '級不明';
+          if (!byGrade[grade]) byGrade[grade] = [];
+          byGrade[grade].push(p);
+        });
+
+        const html = `
+          <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">参加者一覧</h4>
+          ${Object.entries(byGrade).map(([grade, members]) => `
+            <div class="mb-4 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+              <h5 class="font-bold mb-2">${grade} (${members.length}名)</h5>
+              <div class="text-sm text-slate-600 dark:text-slate-400">
+                ${members.map(m => m.name).join('、')}
+              </div>
+            </div>
+          `).join('')}
+
+          <div class="mt-4">
+            <button id="show-detail-btn" class="w-full py-3 bg-slate-100 dark:bg-slate-800 text-primary font-medium rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+              詳細情報を表示
+            </button>
+          </div>
+        `;
+
+        container.innerHTML = html;
+
+        document.getElementById('show-detail-btn').addEventListener('click', showParticipantDetail);
+      }
+
+      function showParticipantDetail() {
+        if (!flowData || !flowData.participants) return;
+
+        const detailHtml = flowData.participants.map(p => `
+          <div class="mb-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+            <div class="font-bold mb-1">${p.name}</div>
+            <div class="text-sm text-slate-600 dark:text-slate-400 space-y-0.5">
+              <div>ふりがな: ${p.furigana || '-'}</div>
+              <div>級: ${p.grade || '-'}</div>
+              <div>段位: ${p.dan || '-'}</div>
+              <div>今年度出場回数: ${p.yearly_count || 0}回</div>
             </div>
           </div>
-        </div>
-      </div>
+        `).join('');
 
-      <% if(data.is_admin){ %>
-      <!-- Detail Info Section -->
-      <div class="detail-info-section">
-        <h4 class="section-title">詳細情報</h4>
-
-        <% if(data.has_lottery){ %>
-        <div class="info-item">
-          <span class="item-label">抽選</span>
-          <span class="item-value">あり</span>
-        </div>
-        <% } %>
-
-        <% if(data.payment_method){ %>
-        <div class="info-item">
-          <span class="item-label">支払方法</span>
-          <span class="item-value"><%= data.payment_method === 'advance' ? '事前振込' : '現地払い' %></span>
-        </div>
-        <% } %>
-
-        <% if(data.application_sent_at){ %>
-        <div class="info-item">
-          <span class="item-label">申込書送付日</span>
-          <span class="item-value"><%= data.application_sent_at %></span>
-        </div>
-        <% } %>
-
-        <% if(data.response_received_at){ %>
-        <div class="info-item">
-          <span class="item-label">主催者返信受領日</span>
-          <span class="item-value"><%= data.response_received_at %></span>
-        </div>
-        <% } %>
-
-        <% if(data.payment_deadline){ %>
-        <div class="info-item">
-          <span class="item-label">支払期限</span>
-          <span class="item-value critical"><%= data.payment_deadline %></span>
-        </div>
-        <% } %>
-
-        <% if(data.payment_destination){ %>
-        <div class="info-item">
-          <span class="item-label">振込先</span>
-          <span class="item-value"><%- data.payment_destination %></span>
-        </div>
-        <% } %>
-
-        <% if(data.total_fee){ %>
-        <div class="info-item">
-          <span class="item-label">合計参加費</span>
-          <span class="item-value amount">¥<%= data.total_fee.toLocaleString() %></span>
-        </div>
-        <% } %>
-
-        <% if(data.payment_completed_at){ %>
-        <div class="info-item">
-          <span class="item-label">支払完了日</span>
-          <span class="item-value"><%= data.payment_completed_at %></span>
-        </div>
-        <% } %>
-
-        <% if(data.memo){ %>
-        <div class="memo-card">
-          <p class="memo-label">メモ</p>
-          <pre class="memo-content"><%- data.memo %></pre>
-        </div>
-        <% } %>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="action-buttons-section">
-        <button class="action-btn secondary show-participants">
-          <span class="btn-icon">📋</span>
-          参加者データ確認
-        </button>
-        <button class="action-btn secondary export-csv">
-          <span class="btn-icon">💾</span>
-          CSV出力
-        </button>
-        <% if(data.current_step > 1){ %>
-          <button class="action-btn small regress-step">
-            <span class="btn-icon">↩</span>
-            前に戻す
-          </button>
-        <% } %>
-      </div>
-      <% } %>
-
-      <div id="participants-container"></div>
-    </div>
-
-    <!-- Fixed Bottom Action -->
-    <% if(data.is_admin && data.current_step < 6){ %>
-    <div class="bottom-action-bar">
-      <button class="primary-action-btn proceed-step">
-        <span class="btn-icon">✓</span>
-        次のステップに進む
-      </button>
-    </div>
-    <% } else { %>
-    <div class="bottom-action-bar">
-      <a href="/application_flow" class="primary-action-btn">
-        一覧に戻る
-      </a>
-    </div>
-    <% } %>
-
-%script#templ-participants(type='text/template')
-  :plain
-    <div class="participants-section">
-      <h5 class="participants-title">参加者一覧</h5>
-      <div class="participants-list">
-        <% _.each(data, function(p){ %>
-          <div class="participant-card">
-            <div class="participant-avatar">
-              <span class="avatar-icon">👤</span>
-            </div>
-            <div class="participant-info">
-              <p class="participant-name"><%- p.name %></p>
-              <p class="participant-meta"><%- p.furigana %> • <%= p.grade %> • <%= p.dan %></p>
-              <p class="participant-count">今年度出場: <%= p.participation_count %>回</p>
-            </div>
+        document.getElementById('participants-container').innerHTML = `
+          <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">参加者詳細</h4>
+          ${detailHtml}
+          <div class="mt-4 flex gap-2">
+            <button id="hide-detail-btn" class="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium rounded-xl">
+              閉じる
+            </button>
+            ${flowData.editable ? `
+              <button id="csv-export-btn" class="flex-1 py-3 bg-primary text-white font-medium rounded-xl flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span>
+                CSV出力
+              </button>
+            ` : ''}
           </div>
-        <% }) %>
-      </div>
-    </div>
+        `;
+
+        document.getElementById('hide-detail-btn').addEventListener('click', () => {
+          renderParticipants(flowData.participants);
+        });
+
+        if (flowData.editable) {
+          document.getElementById('csv-export-btn').addEventListener('click', exportCSV);
+        }
+      }
+
+      function exportCSV() {
+        window.location.href = `/api/application_flow/export_csv/${eventId}`;
+      }
+
+      function setupActionButton(flow) {
+        const btn = document.getElementById('action-btn');
+        btn.addEventListener('click', async () => {
+          if (!confirm('次のステップに進みますか?')) return;
+
+          try {
+            const response = await fetch(`/api/application_flow/progress/${eventId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'next' })
+            });
+
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert('ステップの進行に失敗しました');
+            }
+          } catch (error) {
+            console.error('Failed to progress step:', error);
+            alert('エラーが発生しました');
+          }
+        });
+      }
+
+      // Load on page load
+      loadFlowDetail();

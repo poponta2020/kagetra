@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Organizer Response Phase Detail</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header / Status Bar Area -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between border-b border-slate-200 dark:border-slate-800">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">主催者対応フェーズ</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center text-slate-900 dark:text-slate-100">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Main Content Scrollable Area -->
+<div class="flex-1 overflow-y-auto">
+<!-- Timeline Summary (Collapsed) -->
+<div class="px-4 py-4 space-y-0.5">
+<div class="grid grid-cols-[32px_1fr] gap-x-3 items-center opacity-60">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-green-500 !text-[20px]">check_circle</span>
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-3"></div>
+</div>
+<div class="flex items-center justify-between py-1">
+<p class="text-sm font-medium">内部締切</p>
+<p class="text-xs">完了</p>
+</div>
+</div>
+<div class="grid grid-cols-[32px_1fr] gap-x-3 items-center opacity-60">
+<div class="flex flex-col items-center">
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-3"></div>
+<span class="material-symbols-outlined text-green-500 !text-[20px]">check_circle</span>
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-3"></div>
+</div>
+<div class="flex items-center justify-between py-1">
+<p class="text-sm font-medium">参加申込</p>
+<p class="text-xs">完了</p>
+</div>
+</div>
+<!-- Current Phase Highlight -->
+<div class="grid grid-cols-[32px_1fr] gap-x-3">
+<div class="flex flex-col items-center">
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-3"></div>
+<div class="size-5 rounded-full bg-primary flex items-center justify-center ring-4 ring-primary/20">
+<div class="size-2 rounded-full bg-white"></div>
+</div>
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-full"></div>
+</div>
+<div class="pb-6">
+<div class="flex items-center justify-between pt-0.5">
+<h3 class="text-lg font-bold text-primary">主催者対応 (進行中)</h3>
+</div>
+</div>
+</div>
+</div>
+<!-- Current Phase Card -->
+<div class="px-4 pb-8">
+<div class="bg-slate-100 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[11px] font-bold tracking-wider text-red-500 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded uppercase">Critical Deadline</span>
+<div class="flex -space-x-2">
+<div class="size-8 rounded-full border-2 border-background-light dark:border-background-dark bg-slate-300 overflow-hidden" data-alt="Assignee profile picture">
+<div class="w-full h-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">person</span>
+</div>
+</div>
+</div>
+</div>
+<h1 class="text-3xl font-black tracking-tight mb-2">10月25日 (水)</h1>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        主催者からの参加者名簿の受領、および不備の確認を行ってください。名簿が届かない場合は主催者へ催促の連絡が必要です。
+                    </p>
+<div class="space-y-4">
+<div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<div class="flex-1">
+<p class="text-xs text-slate-500">関連資料</p>
+<p class="text-sm font-medium">大会参加規定_2023.pdf</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Task List Section -->
+<div class="px-4 pb-20">
+<h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">Checklist</h4>
+<div class="space-y-2">
+<label class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+<input class="w-5 h-5 rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+<span class="text-sm">主催者からのメール受信確認</span>
+</label>
+<label class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+<input class="w-5 h-5 rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+<span class="text-sm">名簿のフォーマット整合性チェック</span>
+</label>
+<label class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+<input class="w-5 h-5 rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+<span class="text-sm">不備がある場合の再送依頼</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Action Area (Fixed Bottom) -->
+<div class="p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">how_to_reg</span>
+                名簿の受領を完了する
+            </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pb-6 pt-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium">ホーム</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">emoji_events</span>
+<p class="text-[10px] font-medium">大会一覧</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<p class="text-[10px] font-medium">タスク</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<p class="text-[10px] font-medium">プロフィール</p>
+</a>
+</div>
+</div>
+</body></html>

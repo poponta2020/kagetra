@@ -1,93 +1,114 @@
 # -*- coding: utf-8 -*-
+
 # 申込フロー管理
 class EventApplicationFlow < Sequel::Model(:event_application_flows)
   many_to_one :event
 
   # ステップ定義
   STEPS = {
-    1 => {name: "会内締切", active_form: "会内締切確認中"},
-    2 => {name: "大会申込", active_form: "大会申込中"},
-    3 => {name: "返信待ち", active_form: "返信待ち"},
-    4 => {name: "抽選結果待ち", active_form: "抽選結果待ち"},
-    5 => {name: "参加費支払い", active_form: "参加費支払い中"},
-    6 => {name: "完了", active_form: "完了"}
+    1 => { name: '会内締切', key: 'internal_deadline' },
+    2 => { name: '大会申込', key: 'application' },
+    3 => { name: '返信待ち', key: 'response_waiting' },
+    4 => { name: '抽選結果待ち', key: 'lottery_waiting' },
+    5 => { name: '参加費支払い', key: 'payment' },
+    6 => { name: '完了', key: 'completed' }
   }
 
-  def step_name
-    STEPS[current_step][:name]
+  def before_create
+    super
+    self.current_step ||= 1
+    self.created_at = Time.now
+    self.updated_at = Time.now
   end
 
-  def step_active_form
-    STEPS[current_step][:active_form]
+  def before_update
+    super
+    self.updated_at = Time.now
   end
 
-  # 次のステップに進む
-  def proceed_to_next_step
-    if current_step < 6
+  # 現在のステップ名を取得
+  def current_step_name
+    STEPS[self.current_step][:name]
+  end
+
+  # 現在のステップキーを取得
+  def current_step_key
+    STEPS[self.current_step][:key]
+  end
+
+  # 次のステップへ進む
+  def advance_step!
+    if self.current_step < 6
       self.current_step += 1
-      save
+      self.save
     end
   end
 
-  # 前のステップに戻る
-  def regress_to_previous_step
-    if current_step > 1
-      self.current_step -= 1
-      save
+  # 指定ステップへスキップ
+  def skip_to_step!(step_number)
+    if step_number.between?(1, 6)
+      self.current_step = step_number
+      self.save
     end
   end
 
-  # 現在のステップで必要なアクション
-  def current_action
-    case current_step
-    when 1
-      "参加者を確認し、申込書を作成してください"
-    when 2
-      "申込書を主催者に送付してください"
-    when 3
-      "主催者からの返信を待っています"
-    when 4
-      "抽選結果の確認を待っています"
-    when 5
-      "参加費を確認し、主催者に支払ってください"
-    when 6
-      "大会当日をお待ちください"
-    else
-      ""
-    end
+  # ステップが完了しているか
+  def step_completed?(step_number)
+    self.current_step > step_number
   end
 
-  # ステップが有効かどうか（スキップ判定）
-  def step_enabled?(step_num)
-    case step_num
-    when 4
-      has_lottery # 抽選あり大会のみ
-    when 5
-      payment_method == 'advance' # 事前振込のみ
-    else
-      true
-    end
+  # ステップが現在進行中か
+  def step_current?(step_number)
+    self.current_step == step_number
+  end
+
+  # ステップが未完了か
+  def step_pending?(step_number)
+    self.current_step < step_number
   end
 end
 
-# 参加者ごとの申込状況
+# 参加者ごとの申込状態管理
 class EventUserApplicationStatus < Sequel::Model(:event_user_application_statuses)
   many_to_one :event_user_choice
 
-  # 抽選状態の定義
+  # 抽選ステータス定義
   LOTTERY_STATUSES = {
-    'pending' => '抽選前',
+    'pending' => '結果待ち',
     'won' => '当選',
     'lost' => '落選',
     'waiting' => 'キャンセル待ち'
   }
 
-  def lottery_status_label
-    LOTTERY_STATUSES[lottery_status] || lottery_status
+  def before_create
+    super
+    self.lottery_status ||= 'pending'
+    self.created_at = Time.now
+    self.updated_at = Time.now
   end
 
-  # 参加費集金状況
-  def fee_collected?
-    !fee_collected_at.nil?
+  def before_update
+    super
+    self.updated_at = Time.now
+  end
+
+  # 抽選ステータスの日本語名
+  def lottery_status_name
+    LOTTERY_STATUSES[self.lottery_status] || self.lottery_status
+  end
+
+  # 当選しているか
+  def won?
+    self.lottery_status == 'won'
+  end
+
+  # 落選しているか
+  def lost?
+    self.lottery_status == 'lost'
+  end
+
+  # キャンセル待ちか
+  def waiting?
+    self.lottery_status == 'waiting'
   end
 end

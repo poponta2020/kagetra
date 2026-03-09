@@ -1,0 +1,136 @@
+-# -*- coding: utf-8 -*-
+!!!
+%html.dark{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %script{src: "https://cdn.tailwindcss.com?plugins=forms,container-queries"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel: "stylesheet"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap", rel: "stylesheet"}
+    %script#tailwind-config
+      :plain
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    %title 申込管理
+    :css
+      body {
+        min-height: max(884px, 100dvh);
+      }
+  %body.bg-background-light.dark\\:bg-background-dark.font-display.text-slate-900.dark\\:text-slate-100.antialiased
+    .relative.flex.min-h-screen.w-full.flex-col.overflow-x-hidden
+      / Header
+      %header.sticky.top-0.z-10.flex.items-center.bg-background-light\\/80.dark\\:bg-background-dark\\/80.backdrop-blur-md.p-4.justify-between.border-b.border-slate-200.dark\\:border-slate-800
+        .flex.items-center.gap-3
+          %button#back-btn.flex.size-10.items-center.justify-center.rounded-full.hover\\:bg-slate-200.dark\\:hover\\:bg-slate-800.transition-colors
+            %span.material-symbols-outlined.text-slate-900.dark\\:text-slate-100 arrow_back
+          %h2.text-lg.font-bold.leading-tight.tracking-tight 申込管理
+        .flex.size-10.items-center.justify-center.rounded-full.border.border-slate-200.dark\\:border-slate-800
+          %span.material-symbols-outlined.text-primary assignment
+
+      / Main Content
+      %main.flex-1.pb-32.px-4.py-6
+        #flow-list-container
+          / Loading state
+          .flex.items-center.justify-center.py-12
+            .text-slate-500 読込中...
+
+      / Bottom Navigation
+      %nav.fixed.bottom-0.left-0.right-0.z-20.flex.gap-2.border-t.border-slate-200.dark\\:border-slate-800.bg-white\\/80.dark\\:bg-slate-900\\/80.backdrop-blur-md.px-4.pb-6.pt-3
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "/"}
+          %span.material-symbols-outlined home
+          %p.text-\\[10px\\].font-medium.leading-none ホーム
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-primary{href: "/application_flow"}
+          %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} assignment
+          %p.text-\\[10px\\].font-medium.leading-none 申込管理
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+          %span.material-symbols-outlined person
+          %p.text-\\[10px\\].font-medium.leading-none マイページ
+
+    :javascript
+      document.getElementById('back-btn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+
+      // Load flow list
+      async function loadFlowList() {
+        try {
+          const response = await fetch('/api/application_flow/list');
+          const data = await response.json();
+
+          const container = document.getElementById('flow-list-container');
+
+          if (data.flows.length === 0) {
+            container.innerHTML = `
+              <div class="text-center py-12">
+                <span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 mb-4">inbox</span>
+                <p class="text-slate-500 dark:text-slate-400">表示する申込フローがありません</p>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = data.flows.map(flow => `
+            <a href="/application_flow/${flow.event_id}" class="block mb-4 p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="text-lg font-bold flex-1">${escapeHtml(flow.event_name)}</h3>
+                ${flow.editable ? '<span class="material-symbols-outlined text-primary text-sm">edit</span>' : ''}
+              </div>
+
+              <div class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-3">
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-base">calendar_today</span>
+                  <span>${flow.event_date || '日程未定'}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-base">group</span>
+                  <span>${flow.participant_count}名</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" style="width: ${(flow.current_step / 6) * 100}%"></div>
+                </div>
+                <span class="text-xs font-medium text-primary">${flow.current_step}/6</span>
+              </div>
+
+              <div class="mt-3 inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                ${escapeHtml(flow.current_step_name)}
+              </div>
+            </a>
+          `).join('');
+
+        } catch (error) {
+          console.error('Failed to load flow list:', error);
+          document.getElementById('flow-list-container').innerHTML = `
+            <div class="text-center py-12 text-red-500">
+              <p>データの読み込みに失敗しました</p>
+            </div>
+          `;
+        }
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Load on page load
+      loadFlowList();

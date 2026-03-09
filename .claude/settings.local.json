@@ -15,7 +15,23 @@
       "Bash(docker-compose restart:*)",
       "Bash(docker-compose ps:*)",
       "Bash(ls:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(curl -I http://localhost:9292/)",
+      "Bash(curl -I http://localhost:9292/application_flow)",
+      "Bash(curl -s http://localhost:9292/api/application_flow/list -H \"Cookie: kagetra.session=test\")",
+      "Bash(curl -I http://localhost:9292/css/application_flow.css)",
+      "Bash(curl -s http://localhost:9292/application_flow)",
+      "Bash(head -1 views/*.haml)",
+      "Bash(head -1 routes/*.rb)",
+      "Bash(curl -s http://localhost:9292/application_flow -H \"Cookie: rack.session=test\")",
+      "Bash(curl -s http://localhost:9292/application_flow/1)",
+      "Bash(curl -s \"http://localhost:9292/js/application_flow_detail.js\")",
+      "Bash(curl -s \"http://localhost:9292/js/main.js\")",
+      "Bash(curl -I \"http://localhost:9292/js/application_flow_detail.js\")",
+      "Bash(curl -s \"http://localhost:9292/js/application_flow.js\")",
+      "Bash(curl -s \"http://localhost:9292/js/v27/application_flow_detail.js\")",
+      "Bash(mkdir -p history)",
+      "Bash(mv HISTORY.md history/2026-03-05.md)"
     ]
   }
 }

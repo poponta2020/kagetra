@@ -1,0 +1,142 @@
+-# -*- coding: utf-8 -*-
+!!!
+%html.dark{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %script{src: "https://cdn.tailwindcss.com?plugins=forms,container-queries"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel: "stylesheet"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap", rel: "stylesheet"}
+    %script#tailwind-config
+      :plain
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    %title 大会申込詳細
+    :css
+      body {
+        min-height: max(884px, 100dvh);
+      }
+  %body.bg-background-light.dark\:bg-background-dark.font-display.text-slate-900.dark\:text-slate-100
+    .relative.flex.min-h-screen.w-full.flex-col.overflow-x-hidden
+      / Header
+      .flex.items-center.bg-background-light.dark\:bg-background-dark.p-4.pb-2.justify-between.sticky.top-0.z-10.border-b.border-slate-200.dark\:border-slate-800
+        .text-slate-900.dark\:text-slate-100.flex.size-10.shrink-0.items-center.justify-center.cursor-pointer
+          %span.material-symbols-outlined arrow_back_ios
+        %h2.text-slate-900.dark\:text-slate-100.text-lg.font-bold.leading-tight.tracking-\[-0\.015em\].flex-1.text-center 大会申込
+        .flex.w-10.items-center.justify-end
+          %button.flex.cursor-pointer.items-center.justify-center.rounded-lg.h-10.bg-transparent.text-slate-900.dark\:text-slate-100.p-0
+            %span.material-symbols-outlined more_horiz
+
+      / Progress Section
+      .flex.flex-col.gap-3.p-4.bg-background-light.dark\:bg-background-dark
+        .flex.gap-6.justify-between.items-center
+          %p.text-slate-900.dark\:text-slate-100.text-base.font-semibold.leading-normal 申込フェーズ
+          %p.text-primary.text-sm.font-bold.leading-normal 2 / 3 ステップ
+        .rounded-full.bg-slate-200.dark\:bg-slate-800.h-2\.5.overflow-hidden
+          .h-full.rounded-full.bg-primary{style: "width: 66.6%;"}
+
+      / Steps Accordion
+      .flex.flex-col.px-4
+        / Completed Step
+        %details.flex.flex-col.border-b.border-slate-200.dark\:border-slate-800.py-1.group
+          %summary.flex.cursor-pointer.items-center.justify-between.gap-4.py-4.list-none
+            .flex.items-center.gap-3
+              .bg-green-500\/20.text-green-500.rounded-full.p-1.flex.items-center.justify-center
+                %span.material-symbols-outlined.text-sm.font-bold check
+              %p.text-slate-500.dark\:text-slate-400.text-sm.font-medium.leading-normal ステップ 1: 社内締切 (完了)
+            %span.material-symbols-outlined.text-slate-400.group-open\:rotate-180.transition-transform expand_more
+          .pb-4.px-9
+            %p.text-slate-500.dark\:text-slate-400.text-xs 2023年10月15日に承認されました。
+
+        / Active Step
+        .py-6
+          .flex.items-center.gap-3.mb-4
+            .bg-primary.text-white.rounded-full.h-6.w-6.flex.items-center.justify-center.text-xs.font-bold 2
+            %h2.text-slate-900.dark\:text-slate-100.text-xl.font-bold.leading-tight.tracking-\[-0\.015em\] 主催者へ申込送付
+
+          / Info Cards
+          .grid.grid-cols-2.gap-3.mb-6
+            .bg-slate-100.dark\:bg-slate-800\/50.p-4.rounded-xl.border.border-slate-200.dark\:border-slate-800
+              .flex.items-center.gap-2.mb-1.text-slate-500.dark\:text-slate-400
+                %span.material-symbols-outlined.text-sm calendar_today
+                %span.text-xs.font-medium.uppercase.tracking-wider 締切日
+              %p.text-slate-900.dark\:text-slate-100.font-bold.text-lg 11月20日 (月)
+              %p.text-red-500.text-\[10px\].font-bold.mt-1 残り 4日
+
+            .bg-slate-100.dark\:bg-slate-800\/50.p-4.rounded-xl.border.border-slate-200.dark\:border-slate-800
+              .flex.items-center.gap-2.mb-1.text-slate-500.dark\:text-slate-400
+                %span.material-symbols-outlined.text-sm person
+                %span.text-xs.font-medium.uppercase.tracking-wider 担当者
+              .flex.items-center.gap-2
+                .size-6.rounded-full.bg-primary\/20.flex.items-center.justify-center.overflow-hidden
+                  %span.material-symbols-outlined.text-sm person
+                %p.text-slate-900.dark\:text-slate-100.font-bold.text-sm 佐藤 健太
+
+          / Content Area
+          .space-y-4
+            .bg-primary\/5.border.border-primary\/20.p-4.rounded-xl
+              %h3.text-primary.text-sm.font-bold.mb-2.flex.items-center.gap-2
+                %span.material-symbols-outlined.text-lg info
+                現在の状況
+              %p.text-slate-700.dark\:text-slate-300.text-sm.leading-relaxed
+                社内承認が完了しました。規定の申込用紙をダウンロードし、主催者のメールアドレス（entry@tournament.org）へ送付してください。
+
+            .space-y-3
+              %h4.text-slate-900.dark\:text-slate-100.text-sm.font-bold 必要書類
+              .flex.items-center.justify-between.p-3.bg-white.dark\:bg-slate-900.border.border-slate-200.dark\:border-slate-800.rounded-lg
+                .flex.items-center.gap-3
+                  %span.material-symbols-outlined.text-slate-400 description
+                  %span.text-sm 大会参加申込書.pdf
+                %span.material-symbols-outlined.text-primary.cursor-pointer download
+
+              .flex.items-center.justify-between.p-3.bg-white.dark\:bg-slate-900.border.border-slate-200.dark\:border-slate-800.rounded-lg.opacity-60
+                .flex.items-center.gap-3
+                  %span.material-symbols-outlined.text-slate-400 image
+                  %span.text-sm 選手名簿写真.zip
+                %span.material-symbols-outlined.text-primary.cursor-pointer download
+
+        / Future Step
+        %details.flex.flex-col.border-t.border-slate-200.dark\:border-slate-800.py-1.group
+          %summary.flex.cursor-not-allowed.items-center.justify-between.gap-4.py-4.list-none.opacity-50
+            .flex.items-center.gap-3
+              .bg-slate-200.dark\:bg-slate-800.text-slate-400.rounded-full.h-6.w-6.flex.items-center.justify-center.text-xs.font-bold 3
+              %p.text-slate-900.dark\:text-slate-100.text-sm.font-medium.leading-normal ステップ 3: 参加費振込
+            %span.material-symbols-outlined.text-slate-400 lock
+
+      / Bottom Action
+      .mt-auto.p-4.bg-background-light.dark\:bg-background-dark.border-t.border-slate-200.dark\:border-slate-800.space-y-4
+        %button.w-full.bg-primary.hover\:bg-primary\/90.text-white.font-bold.py-4.rounded-xl.shadow-lg.shadow-primary\/20.flex.items-center.justify-center.gap-2
+          %span 申込を完了する
+          %span.material-symbols-outlined send
+
+      / Bottom Navigation
+      .flex.gap-2.border-t.border-slate-200.dark\:border-slate-800.bg-white.dark\:bg-slate-900.px-4.pb-6.pt-2
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+          %span.material-symbols-outlined home
+          %p.text-\[10px\].font-medium.leading-normal.tracking-\[0\.015em\] ホーム
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+          %span.material-symbols-outlined emoji_events
+          %p.text-\[10px\].font-medium.leading-normal.tracking-\[0\.015em\] 大会一覧
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-primary{href: "#"}
+          %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} assignment_turned_in
+          %p.text-\[10px\].font-medium.leading-normal.tracking-\[0\.015em\] 進行状況
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+          %span.material-symbols-outlined settings
+          %p.text-\[10px\].font-medium.leading-normal.tracking-\[0\.015em\] 設定
