@@ -1,44 +1,57 @@
 # -*- coding: utf-8 -*-
-require_relative './helper'
 Sequel.migration do
-  change do
-
+  up do
     # 申込フロー管理テーブル
-    create_table_custom(:event_application_flows, [:base], comment:"大会申込フロー管理") do
-      foreign_key :event_id, :events, null: false, unique: true, on_delete: :cascade, comment:"対象大会"
-      Integer :current_step, null: false, default: 1, comment:"現在のステップ(1:会内締切,2:大会申込,3:返信待ち,4:抽選結果待ち,5:参加費支払い,6:完了)"
-      TrueClass :has_lottery, default: false, comment:"抽選あり"
-      String :payment_method, default: 'advance', comment:"支払方法(advance:事前振込,onsite:現地払い)"
+    create_table(:event_application_flows) do
+      primary_key :id
+      foreign_key :event_id, :events, null: false, unique: true
+
+      Integer :current_step, null: false, default: 1  # 1〜6
 
       # ステップ2: 大会申込
-      Date :application_sent_at, comment:"申込書送付日"
-      String :application_method, size:20, comment:"送付方法(email,mail,web)"
+      Date :application_sent_at                       # 送付日
+      String :application_method                      # 'email', 'mail', 'web'
+      Text :application_memo                          # メモ
 
       # ステップ3: 返信待ち
-      Date :response_received_at, comment:"主催者返信受領日"
-      Text :response_memo, comment:"受理番号や返信内容のメモ"
-
-      # ステップ4: 抽選結果待ち
-      Date :lottery_result_date, comment:"抽選結果判明日"
+      Date :response_deadline                         # 返信期限
+      TrueClass :response_deadline_tbd, default: false # 未定フラグ
+      Text :response_memo                             # 受理番号等
 
       # ステップ5: 参加費支払い
-      Date :payment_deadline, comment:"支払期限"
-      String :payment_destination, size:255, comment:"振込先情報"
-      Integer :total_fee, comment:"合計参加費(円)"
-      Date :payment_completed_at, comment:"主催者への支払完了日"
+      Date :payment_deadline                          # 支払期限
+      Text :payment_bank_info                         # 振込先
+      TrueClass :payment_completed, default: false    # 支払済み
+      Integer :total_fee                              # 合計参加費（円）
 
-      # 共通
-      Text :memo, comment:"メモ欄"
+      DateTime :created_at
+      DateTime :updated_at
+
+      index :event_id
     end
 
-    # 参加者ごとの申込状況管理テーブル
-    create_table_custom(:event_user_application_statuses, [:base], comment:"参加者ごとの申込状況") do
-      foreign_key :event_user_choice_id, :event_user_choices, null: false, unique: true, on_delete: :cascade, comment:"参加選択"
-      String :lottery_status, size:20, default: 'pending', comment:"抽選状況(pending:抽選前,won:当選,lost:落選,waiting:キャンセル待ち)"
-      Integer :fee, comment:"個人の参加費(円)"
-      Date :fee_collected_at, comment:"個人から会への参加費集金完了日"
-      Text :memo, comment:"個人ごとのメモ"
-    end
+    # 参加者ごとの状態管理テーブル
+    create_table(:event_user_application_statuses) do
+      primary_key :id
+      foreign_key :event_user_choice_id, :event_user_choices, null: false, unique: true
 
+      # ステップ4: 抽選結果
+      String :lottery_status                          # 'pending', 'won', 'lost', 'waiting'
+
+      # ステップ5: 参加費
+      Integer :fee                                    # 個人の参加費（円）
+      TrueClass :fee_paid_to_organizer, default: false # 会→主催者への支払済み
+      TrueClass :fee_collected_from_user, default: false # 個人→会への集金済み
+
+      DateTime :created_at
+      DateTime :updated_at
+
+      index :event_user_choice_id
+    end
+  end
+
+  down do
+    drop_table(:event_user_application_statuses)
+    drop_table(:event_application_flows)
   end
 end

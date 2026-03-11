@@ -1,0 +1,136 @@
+-# -*- coding: utf-8 -*-
+!!!
+%html.dark{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %script{src: "https://cdn.tailwindcss.com?plugins=forms,container-queries"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel: "stylesheet"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap", rel: "stylesheet"}
+    %script#tailwind-config
+      :plain
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    %title 主催者対応フェーズ詳細
+    :css
+      body {
+        min-height: max(884px, 100dvh);
+      }
+  %body.bg-background-light.dark\:bg-background-dark.font-display.text-slate-900.dark\:text-slate-100.antialiased
+    .relative.flex.h-screen.w-full.flex-col.overflow-hidden
+      / Header / Status Bar Area
+      .flex.items-center.bg-background-light.dark\:bg-background-dark.p-4.pb-2.justify-between.border-b.border-slate-200.dark\:border-slate-800
+        .text-slate-900.dark\:text-slate-100.flex.size-10.shrink-0.items-center.justify-center.cursor-pointer
+          %span.material-symbols-outlined arrow_back_ios
+        %h2.text-slate-900.dark\:text-slate-100.text-lg.font-bold.leading-tight.tracking-tight.flex-1.text-center 主催者対応フェーズ
+        .flex.w-10.items-center.justify-end
+          %button.flex.cursor-pointer.items-center.justify-center.text-slate-900.dark\:text-slate-100
+            %span.material-symbols-outlined more_horiz
+
+      / Main Content Scrollable Area
+      .flex-1.overflow-y-auto
+        / Timeline Summary (Collapsed)
+        .px-4.py-4.space-y-0\.5
+          .grid.grid-cols-\[32px_1fr\].gap-x-3.items-center.opacity-60
+            .flex.flex-col.items-center
+              %span.material-symbols-outlined.text-green-500.\!text-\[20px\] check_circle
+              .w-\[2px\].bg-slate-300.dark\:bg-slate-700.h-3
+            .flex.items-center.justify-between.py-1
+              %p.text-sm.font-medium 内部締切
+              %p.text-xs 完了
+
+          .grid.grid-cols-\[32px_1fr\].gap-x-3.items-center.opacity-60
+            .flex.flex-col.items-center
+              .w-\[2px\].bg-slate-300.dark\:bg-slate-700.h-3
+              %span.material-symbols-outlined.text-green-500.\!text-\[20px\] check_circle
+              .w-\[2px\].bg-slate-300.dark\:bg-slate-700.h-3
+            .flex.items-center.justify-between.py-1
+              %p.text-sm.font-medium 参加申込
+              %p.text-xs 完了
+
+          / Current Phase Highlight
+          .grid.grid-cols-\[32px_1fr\].gap-x-3
+            .flex.flex-col.items-center
+              .w-\[2px\].bg-slate-300.dark\:bg-slate-700.h-3
+              .size-5.rounded-full.bg-primary.flex.items-center.justify-center.ring-4.ring-primary\/20
+                .size-2.rounded-full.bg-white
+              .w-\[2px\].bg-slate-300.dark\:bg-slate-700.h-full
+            .pb-6
+              .flex.items-center.justify-between.pt-0\.5
+                %h3.text-lg.font-bold.text-primary 主催者対応 (進行中)
+
+        / Current Phase Card
+        .px-4.pb-8
+          .bg-slate-100.dark\:bg-slate-800\/50.rounded-xl.p-5.border.border-slate-200.dark\:border-slate-800.shadow-sm
+            .flex.items-center.justify-between.mb-4
+              %span.text-\[11px\].font-bold.tracking-wider.text-red-500.dark\:text-red-400.bg-red-500\/10.px-2.py-0\.5.rounded.uppercase Critical Deadline
+              .flex.-space-x-2
+                .size-8.rounded-full.border-2.border-background-light.dark\:border-background-dark.bg-slate-300.overflow-hidden
+                  .w-full.h-full.bg-primary\/20.flex.items-center.justify-center
+                    %span.material-symbols-outlined.text-primary.text-sm person
+
+            %h1.text-3xl.font-black.tracking-tight.mb-2 10月25日 (水)
+            %p.text-slate-600.dark\:text-slate-400.text-sm.leading-relaxed.mb-6
+              主催者からの参加者名簿の受領、および不備の確認を行ってください。名簿が届かない場合は主催者へ催促の連絡が必要です。
+
+            .space-y-4
+              .flex.items-center.gap-3.p-3.bg-white.dark\:bg-slate-900.rounded-lg.border.border-slate-200.dark\:border-slate-800
+                %span.material-symbols-outlined.text-slate-400 description
+                .flex-1
+                  %p.text-xs.text-slate-500 関連資料
+                  %p.text-sm.font-medium 大会参加規定_2023.pdf
+                %span.material-symbols-outlined.text-slate-400 chevron_right
+
+        / Task List Section
+        .px-4.pb-20
+          %h4.text-xs.font-bold.uppercase.tracking-widest.text-slate-500.mb-4.px-1 Checklist
+          .space-y-2
+            %label.flex.items-center.gap-3.p-4.bg-white.dark\:bg-slate-900.rounded-xl.border.border-slate-200.dark\:border-slate-800
+              %input.w-5.h-5.rounded.border-slate-300.dark\:border-slate-700.text-primary.focus\:ring-primary.bg-transparent{type: "checkbox"}
+              %span.text-sm 主催者からのメール受信確認
+
+            %label.flex.items-center.gap-3.p-4.bg-white.dark\:bg-slate-900.rounded-xl.border.border-slate-200.dark\:border-slate-800
+              %input.w-5.h-5.rounded.border-slate-300.dark\:border-slate-700.text-primary.focus\:ring-primary.bg-transparent{type: "checkbox"}
+              %span.text-sm 名簿のフォーマット整合性チェック
+
+            %label.flex.items-center.gap-3.p-4.bg-white.dark\:bg-slate-900.rounded-xl.border.border-slate-200.dark\:border-slate-800
+              %input.w-5.h-5.rounded.border-slate-300.dark\:border-slate-700.text-primary.focus\:ring-primary.bg-transparent{type: "checkbox"}
+              %span.text-sm 不備がある場合の再送依頼
+
+      / Action Area (Fixed Bottom)
+      .p-4.bg-background-light\/80.dark\:bg-background-dark\/80.backdrop-blur-md.border-t.border-slate-200.dark\:border-slate-800
+        %button.w-full.bg-primary.hover\:bg-primary\/90.text-white.font-bold.py-4.rounded-xl.shadow-lg.shadow-primary\/20.flex.items-center.justify-center.gap-2.transition-transform.active\:scale-\[0\.98\]
+          %span.material-symbols-outlined how_to_reg
+          名簿の受領を完了する
+
+      / Bottom Navigation Bar
+      .flex.gap-2.border-t.border-slate-200.dark\:border-slate-800.bg-white.dark\:bg-slate-900.px-4.pb-6.pt-2
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400.dark\:text-slate-500{href: "#"}
+          %span.material-symbols-outlined home
+          %p.text-\[10px\].font-medium ホーム
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-primary{href: "#"}
+          %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} emoji_events
+          %p.text-\[10px\].font-medium 大会一覧
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400.dark\:text-slate-500{href: "#"}
+          %span.material-symbols-outlined assignment
+          %p.text-\[10px\].font-medium タスク
+
+        %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400.dark\:text-slate-500{href: "#"}
+          %span.material-symbols-outlined account_circle
+          %p.text-\[10px\].font-medium プロフィール

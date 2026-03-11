@@ -132,11 +132,28 @@ class MainApp < Sinatra::Base
   get '/etc' do
     redirect '/top'
   end
+
+  # 申込フロー管理
   get '/application_flow' do
-    haml :application_flow, :encoding => 'utf-8'
+    auth
+    haml :application_flow_list, :encoding => 'utf-8', :layout => false
   end
+
   get '/application_flow/:event_id' do
-    haml :application_flow_detail, :encoding => 'utf-8'
+    auth
+    @event_id = params[:event_id].to_i
+    haml :application_flow_detail, :encoding => 'utf-8', :layout => false
+  end
+
+  # デモページ（開発用）
+  get '/application_flow/phase1', :private => false do
+    haml :application_flow_phase1, :encoding => 'utf-8', :layout => false
+  end
+  get '/application_flow/phase2', :private => false do
+    haml :application_flow_phase2, :encoding => 'utf-8', :layout => false
+  end
+  get '/application_flow/phase3', :private => false do
+    haml :application_flow_phase3, :encoding => 'utf-8', :layout => false
   end
   get '/haml/v:resource_version/:prefix' do
     # ブラウザ側にキャッシュさせるのでhamlファイルには@userなどの動的な情報が含まれないようにすること

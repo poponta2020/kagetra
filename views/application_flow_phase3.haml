@@ -1,0 +1,154 @@
+-# -*- coding: utf-8 -*-
+!!!
+%html.dark{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1.0"}
+    %script{src: "https://cdn.tailwindcss.com?plugins=forms,container-queries"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel: "stylesheet"}
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap", rel: "stylesheet"}
+    %script#tailwind-config
+      :plain
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    %title 参加費支払詳細
+    :css
+      body {
+        min-height: max(884px, 100dvh);
+      }
+  %body.bg-background-light.dark\:bg-background-dark.font-display.text-slate-900.dark\:text-slate-100.antialiased
+    .relative.flex.min-h-screen.w-full.flex-col.overflow-x-hidden
+      %header.sticky.top-0.z-10.flex.items-center.bg-background-light\/80.dark\:bg-background-dark\/80.backdrop-blur-md.p-4.justify-between.border-b.border-slate-200.dark\:border-slate-800
+        .flex.items-center.gap-3
+          %button.flex.size-10.items-center.justify-center.rounded-full.hover\:bg-slate-200.dark\:hover\:bg-slate-800.transition-colors
+            %span.material-symbols-outlined.text-slate-900.dark\:text-slate-100 arrow_back
+          %h2.text-lg.font-bold.leading-tight.tracking-tight 参加費支払
+        .flex.size-10.items-center.justify-center.rounded-full.border.border-slate-200.dark\:border-slate-800
+          %span.material-symbols-outlined.text-primary account_balance_wallet
+
+      %main.flex-1.pb-32
+        .px-4.py-6
+          .grid.grid-cols-\[40px_1fr\].gap-x-2
+            / Completed Step 1
+            .flex.flex-col.items-center.gap-1
+              .flex.h-10.w-10.items-center.justify-center.rounded-full.bg-emerald-500\/20.text-emerald-500
+                %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} check_circle
+              .w-\[2px\].bg-emerald-500\/30.h-6
+            .flex.flex-col.pt-1.pb-4
+              %p.text-sm.font-semibold.opacity-70 学内締切
+              %p.text-xs.text-emerald-500 2023/10/15 完了
+
+            / Completed Step 2
+            .flex.flex-col.items-center.gap-1
+              .flex.h-10.w-10.items-center.justify-center.rounded-full.bg-emerald-500\/20.text-emerald-500
+                %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} check_circle
+              .w-\[2px\].bg-emerald-500\/30.h-6
+            .flex.flex-col.pt-1.pb-4
+              %p.text-sm.font-semibold.opacity-70 申し込み
+              %p.text-xs.text-emerald-500 2023/10/20 完了
+
+            / Completed Step 3
+            .flex.flex-col.items-center.gap-1
+              .flex.h-10.w-10.items-center.justify-center.rounded-full.bg-emerald-500\/20.text-emerald-500
+                %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} check_circle
+              .w-\[2px\].bg-emerald-500\/30.h-6
+            .flex.flex-col.pt-1.pb-4
+              %p.text-sm.font-semibold.opacity-70 主催者回答
+              %p.text-xs.text-emerald-500 2023/10/22 完了
+
+            / Current Step - Payment
+            .flex.flex-col.items-center.gap-1
+              .flex.h-10.w-10.items-center.justify-center.rounded-full.bg-primary.text-white.shadow-lg.shadow-primary\/30
+                %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} payments
+              .w-\[2px\].bg-slate-200.dark\:bg-slate-800.h-full
+            .flex.flex-col.pt-1.pb-6
+              .flex.items-center.justify-between
+                %p.text-base.font-bold.text-primary 支払手続中
+                %span.px-2.py-0\.5.rounded.text-\[10px\].font-bold.bg-primary\/10.text-primary.uppercase Active
+
+              / Payment Card
+              .mt-4.p-5.rounded-xl.bg-white.dark\:bg-slate-900.border.border-slate-200.dark\:border-slate-800.shadow-sm.space-y-4
+                .flex.justify-between.items-start
+                  %div
+                    %p.text-xs.text-slate-500.dark\:text-slate-400.mb-1 支払期限
+                    %p.text-lg.font-bold.text-rose-500 2023/11/05 (日)
+                  .flex.flex-col.items-end
+                    %p.text-xs.text-slate-500.dark\:text-slate-400.mb-1 担当者
+                    .flex.items-center.gap-2
+                      .h-6.w-6.rounded-full.bg-primary\/20.flex.items-center.justify-center
+                        %span.material-symbols-outlined.text-\[14px\] person
+                      %span.text-sm.font-medium 会計担当 A
+
+                .h-px.bg-slate-200.dark\:bg-slate-800
+
+                .space-y-3
+                  %h3.text-sm.font-bold.flex.items-center.gap-2
+                    %span.material-symbols-outlined.text-primary.text-lg info
+                    振込先情報
+
+                  .rounded-lg.bg-slate-50.dark\:bg-slate-800\/50.p-3.space-y-2.border.border-slate-200.dark\:border-slate-700
+                    .flex.justify-between
+                      %span.text-xs.text-slate-500.dark\:text-slate-400 銀行名
+                      %span.text-sm.font-medium 三菱UFJ銀行
+                    .flex.justify-between
+                      %span.text-xs.text-slate-500.dark\:text-slate-400 支店名
+                      %span.text-sm.font-medium 〇〇支店 (123)
+                    .flex.justify-between
+                      %span.text-xs.text-slate-500.dark\:text-slate-400 口座種別
+                      %span.text-sm.font-medium 普通 1234567
+                    .flex.justify-between
+                      %span.text-xs.text-slate-500.dark\:text-slate-400 名義
+                      %span.text-sm.font-medium トウナメント ウンエイジムキョク
+
+                  .flex.justify-between.items-center.bg-primary\/5.p-3.rounded-lg.border.border-primary\/20
+                    %span.text-xs.font-bold.text-primary 振込金額
+                    %span.text-xl.font-black.text-primary ¥15,000
+
+                .flex.items-center.gap-2.text-\[10px\].text-slate-500.dark\:text-slate-400.leading-relaxed
+                  %span.material-symbols-outlined.text-sm warning
+                  %span 振込手数料はご負担ください。振込名の前に受付番号を入力してください。
+
+            / Future Step - Tournament Day
+            .flex.flex-col.items-center.gap-1
+              .flex.h-10.w-10.items-center.justify-center.rounded-full.bg-slate-200.dark\:bg-slate-800.text-slate-400
+                %span.material-symbols-outlined emoji_events
+            .flex.flex-col.pt-1
+              %p.text-sm.font-semibold.opacity-40 大会当日
+              %p.text-xs.text-slate-500 11/12 開催予定
+
+      %footer.fixed.bottom-0.left-0.right-0.z-20.bg-background-light.dark\:bg-background-dark
+        .p-4.border-t.border-slate-200.dark\:border-slate-800
+          %button.w-full.h-14.bg-primary.hover\:bg-primary\/90.text-white.font-bold.rounded-xl.flex.items-center.justify-center.gap-2.shadow-lg.shadow-primary\/25.transition-all.active\:scale-\[0\.98\]
+            %span.material-symbols-outlined task_alt
+            振込を完了する
+
+        %nav.flex.gap-2.border-t.border-slate-200.dark\:border-slate-800.bg-white\/80.dark\:bg-slate-900\/80.backdrop-blur-md.px-4.pb-6.pt-3
+          %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+            %span.material-symbols-outlined home
+            %p.text-\[10px\].font-medium.leading-none ホーム
+
+          %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-primary{href: "#"}
+            %span.material-symbols-outlined{style: "font-variation-settings: 'FILL' 1"} emoji_events
+            %p.text-\[10px\].font-medium.leading-none 大会一覧
+
+          %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+            %span.material-symbols-outlined person
+            %p.text-\[10px\].font-medium.leading-none マイページ
+
+          %a.flex.flex-1.flex-col.items-center.justify-center.gap-1.text-slate-400{href: "#"}
+            %span.material-symbols-outlined settings
+            %p.text-\[10px\].font-medium.leading-none 設定
