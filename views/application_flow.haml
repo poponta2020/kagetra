@@ -16,6 +16,12 @@
 
 #application-flow-list
 
+/ 詳細モーダル（Foundation reveal）
+#container-flow-detail.reveal-modal.xlarge(data-reveal aria-hidden="true" role="dialog")
+  %a.close-reveal-modal(aria-label="Close") &#215;
+  #flow-detail-content
+
+/ 一覧テンプレート
 %script#templ-flow-list(type='text/template')
   .row
     .large-12.columns
@@ -47,3 +53,77 @@
             </tr>
             <% }) %>
       <% } %>
+
+/ 詳細テンプレート
+%script#templ-flow-detail(type='text/template')
+  :plain
+    <div class="event-header">
+      <h4 class="event-title"><%- data.event_name %></h4>
+      <div class="event-meta">
+        <span>📅 <%= data.event_date || '日程未定' %></span>
+        <span>⏰ 締切: <%= data.deadline || '未設定' %></span>
+        <span>👥 <%= data.participant_count %>名</span>
+      </div>
+    </div>
+
+    <div class="flow-chart">
+      <% _.each(data.steps, function(step, i) { %>
+        <% if(step.enabled !== false) { %>
+        <div class="flow-step <%= step.completed ? 'completed' : (step.current ? 'current' : '') %>">
+          <div class="flow-step-number"><%= step.number %></div>
+          <div class="flow-step-name"><%- step.name %></div>
+        </div>
+        <% if(i < data.steps.length - 1) { %>
+        <div class="flow-arrow">→</div>
+        <% } %>
+        <% } %>
+      <% }) %>
+    </div>
+
+    <div class="current-action">
+      <h5>現在のタスク</h5>
+      <p><%- data.current_action %></p>
+    </div>
+
+    <% if(data.is_admin) { %>
+    <div class="button-group">
+      <a href="#" class="button show-participants">申込書作成用データ確認</a>
+      <a href="#" class="button secondary export-csv">CSV出力</a>
+      <% if(data.current_step < 6) { %>
+      <a href="#" class="button success proceed-step">次のステップに進む →</a>
+      <% } %>
+    </div>
+    <% } %>
+
+    <div id="participants-container"></div>
+
+    <div class="button-group">
+      <a href="#" class="button secondary back-to-list">← 一覧に戻る</a>
+    </div>
+
+/ 参加者テンプレート
+%script#templ-participants(type='text/template')
+  :plain
+    <h5>参加者一覧（<%= data.length %>名）</h5>
+    <table class="participants-table">
+      <thead>
+        <tr>
+          <th>氏名</th>
+          <th>ふりがな</th>
+          <th>級</th>
+          <th>段位</th>
+          <th>今年度出場回数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(data, function(p) { %>
+        <tr>
+          <td><%- p.name %></td>
+          <td><%- p.furigana %></td>
+          <td><%- p.grade %></td>
+          <td><%- p.dan %></td>
+          <td><%= p.participation_count %>回</td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
